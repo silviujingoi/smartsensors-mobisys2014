@@ -1,0 +1,124 @@
+
+Section 1 -- Introduction
+
+
+
+Exploration of different wakeup conditions
+
+An exploration of the different architectures/approaches for continous sensing
+   In terms of: 
+   wakeup precision -> energy 
+   Timeliness
+   Recall  
+   
+
+Section 2 -- Continous sensing approaches today
+  - Always on
+  - Duty cycling
+  - Batching (assumes duty cycling)  Nexus 5
+  - Computation offloading + wakeup events/interrupts
+    - Fully programmable (Lin Zong's paper), app developer design algorithm
+    - Predefined activity
+	App developer registers for a high level condition (e.g., step occured, significant motion).
+	No control over underlying algo, or customization of params.
+	Android 4.4, MotoX
+
+Section 3 -- Out Approach --> Predefine filtering API
+
+  Finite set of algorithms/filters and configurable params
+  App developer choses amongst a set of exisiting algorithms and configures them
+
+  E.g., sound above a threshold, for a certain duration.
+
+  Possible threshold, explonential moving average, FFT
+	    
+  Advantages:
+    support unlimited activities
+    easier to program that fully programmable
+    
+    (less important) support multiple applications    	   
+  
+   	
+Section 4 -- Prototype
+
+  - Focuses on accelerometer-based applications	
+     
+  - Software changes 
+
+    Programer interface (what the programmer needs to know to use our system)
+
+    Changes to Android sensor manager
+
+    Java API
+       sensorManger.sense (sensortype, filter, filter_parameters, callback)
+ 
+  - Hardware
+
+    Processor boards used
+
+    Communication with Nexus 4.  Use of UART over mic port to wake up device
+
+    Implemented filters
+
+  - Power profiling of Nexus 4 and Nexus 4 with our hardware
+       
+
+Section 5 -- Experimental setup
+  
+  - Live experiments hard to control for repeatibility
+
+    Instead, collected traces and ran trace-based simulations
+
+    Even trace collection requires repeatibility and ground truth
+
+    Therefore we used a robot.  
+
+    Acknowledge that robot existance could have been used to run live
+    experiment, but that we did not do so for time reasons and to
+    allow us to do an exhaustive exploration of the parameter
+    configuration space.  Moreover, taking fine grain power
+    measurements while the robot is in motion is not
+    trivial. Nonetheless, this is part of future work.
+
+    comment on how the fact that we use a dog robot limit the results
+    given that we are really interested in human.  or how these
+    results will transalate to real users.
+
+    remind reader that the focus is not on developing better detection
+    applications, but how to reduce the energy consumption given a
+    specific algorithm.
+
+    Also collected traces from human subjects for 
+  
+  - Applications
+
+    - steps
+
+    - headbutts 
+
+    - stand up/sit down
+
+  - Describe robot schedule/drill/regiment/routine    
+    
+    - talk about frequency of each action and what it is meant to represent
+    - talk about the 3 groups
+
+  - Simulator
+    - Inputs
+    - Outputs
+    - Power model
+            	
+
+Section 6 -- Results
+
+
+
+Section 7 -- Related work
+
+Section 8 -- Conclusions
+
+
+
+
+
+
