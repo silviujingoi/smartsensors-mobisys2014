@@ -1,0 +1,30 @@
+
+\section{Approach}
+\label{sec:approach}
+
+The greatest challenge we faced was determining what computations should be executed on the low-
+power processor. On one hand, pushing more computation to the low-power processor will result in the
+main processor remaining asleep for longer periods of time and increasing energy savings. On the other
+hand, the throughput of a low-power processor is much lower than that of the main processor. We want
+that any sensor data analysis performed by the low-power processor to be executed in real-time and the
+main processor to be woken up as soon as necessary. Additionally, there are many parts of a mobile
+application that cannot be executed on the low-power processor. Any code that handles the graphical
+user interface or that needs to use resources not available to the low-powered processor needs to run
+on the main processor.
+
+A second challenge we are facing is determining what appropriate wake-up conditions look like. For this, we examined sensor-driven applications to see what type of computations are performed on the sensor data. By analyzing such applications, we noticed that the computations performed on the sensor data follow a number of steps that are application-specific. However, at each step, the application may be looking for a specific event. For example, an
+accelerometer-based fall detector is looking for acceleration representing free-falling, followed by a big
+spike in the acceleration magnitude TODO: add footnote defining magnitude   representing the moment of
+impact TODO: add citation. We also noticed that some of the initial steps may be common among several
+applications. For example, several accelerometer-based applications initially check whether the
+acceleration magnitude exceeds a certain threshold in order to determine if there is any movement.
+Also, because there exists a significant amount of noise in the acceleration data, many applications are
+implementing low-pass filters to obtain a smoother form of the accelerometer readings. If multiple
+applications are running at the same time, they are each checking for these events independently and it
+might result in redundant computation. Common steps such as thresholding and low-pass filtering are
+excellent candidates for functionality that should be considered as part of defining wake-up conditions.
+
+We chose to focus our efforts on accelerometer-based applications because there exists a wide-range of
+such applications available on the various mobile application markets. Applications using the device's
+camera or microphone are fairly common as well. However, it is quite rare that multiple applications are
+using these sensors simultaneously.

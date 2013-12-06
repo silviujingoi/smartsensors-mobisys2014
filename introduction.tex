@@ -1,0 +1,54 @@
+
+\section{\label{sec:Introduction}Introduction}
+
+Today's smartphones have increasingly more powerful processors, more memory, bigger and sharper screens and a vast array of sensors. However, battery technology has seen very few advances in the last few decades. As a result, batteries will be one of the biggest obstacles for future growth of smartphones. Energy constraints will remain the primary bottleneck for handheld mobile devices TODO:add citation. Consequently, we must look at other innovative ways to reduce energy consumption in mobile devices.
+
+There exists a growing demand for mobile applications that require continuous sensing. Examples range from medical and health monitoring applications, such as pedometers and fall detectors, to applications that require participatory sensing, such as pollution and traffic monitoring.
+
+Currently, smartphones are a poor choice for these kind of applications as they prevent the device’s
+processor from going to sleep for extended periods of time. As a result, applications that perform
+continuous sensing may cause the device's battery to drain within several hours. Excessive power
+consumption can be addressed by duty cycling the phone. This is performed by putting the processor
+to sleep and periodically waking up to take sensor readings. However, this approach has several
+disadvantages. It is suboptimal as the phone may wake up to find out that the event of interest is not
+currently occurring. Additionally, it may fail to capture an event of interest that occurs while the phone
+is asleep. Finally, this approach does not scale, as multiple applications (lacking mutual awareness) may
+define conflicting wake-up policies that can result in little or no sleep time.
+
+In light of the higher demand for sensor-based applications, Google's recent update of Play Services for
+Android introduced user activity recognition. Other applications may use Google Play Services to request
+periodic activity recognition updates. However, this approach uses power cycling and activities occurring
+while the phone is asleep might not be detectad.
+
+An alternative approach is to offload the sensing process to a low-power processor and wake up the
+main processor when an event of interest occurs. Related research TODO:cite Reflex and Turducken
+describe and implement similar approaches to reduce power consumption. However, in these systems,
+the application developer has to be aware of the heterogeneous nature of the platform and even simple
+applications have to be refactored into distributed programs.
+
+The trend towards a heterogeneous computing architecture is also evident in the mobile hardware
+industry. ARM Holding has recently developed big.LITTLE, an architecture that couples low-power
+processors with more powerful and power-hungry processors<cite>. <TODO: update>big.LITTLE is expected to
+make its first appearance in consumer electronics in the Samsung Galaxy S4 that first became available
+in late April 2013. 
+
+TODO: describe features introduced with the Moto X
+
+TODO: describe recent changes to Android 4.3 and 4.4 and available on the Nexus 5
+
+TODO: describe architecture used by the telephony radio and how events of interest (calls, text messages) wake-up the main processor 
+
+Our research proposes “SmartSensors” that allow applications to be notified when events of interest
+occur. Our system aims to minimize power consumption by pushing computation to a low-power
+processor. Common algorithms that are currently being used by many sensor-driven applications will be
+offloaded to the low-power processor. Additionally, our system can reduce power consumption by using
+the low-power processor to buffer sensor data and sending the entire sensor data batch to the
+application when the main processor wakes-up. To benefit application developers, our system will
+provide a flexible and easy-to-use interface that will allow mobile applications to specify a wide-range of
+wake-up conditions, while hiding the heterogeneous nature of the system from the developer. This will
+simplify application development and allow our system to multiplex sensing for multiple applications.
+
+This paper makes several contributions. First, it investigates the efficiency of wake-up approaches such as duty cycling and batching and the effects on the accuracy of applications that are looking for specific events. Secondly, it analyzes the effectiveness of several classes of wake-up conditions. We examine how different wake-up
+conditions affect event of interest recall for several application, awake time of the device, and the number of 
+transitions between the sleep and awake states. Additionally, it provides an power consumption model based
+on the real power measurements.

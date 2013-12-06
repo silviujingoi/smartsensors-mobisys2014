@@ -1,0 +1,270 @@
+
+\subsection{Octopus-FS}\label{sec:VSFS_Impl}
+
+Octopus-FS provides a dynamic caching and sharing layer to a file
+server, where the files reside permanently. It runs on compute nodes
+in the system and has a caching and sharing component on Dom0 and a
+file system interface on the guest domains. Communication between the
+two is enabled via an implementation of Xen split driver mechanism
+while sharing among VMs is built on top of the Xen grant tables
+mechanism. The overall OFS architecture is shown in
+Figure~\ref{fig:fsdiagram}.
+
+OFS caches files on the privileged domain by hosting them on RAMFS,
+which provides a low overhead file system layer on top of the linux
+buffer cache. Using RAMFS as backing guarantees the pages stay in RAM
+and are not swapped to disk. Hosting on the privileged domain means
+that files can be kept cached in memory across DomU instantiations.
+
+When a file is opened by a guest domain, the request gets relayed to Dom0 which checks if the file is in its cache. If the file is not available, it is fetched from a file server and placed in the cache, potentially evicting an unused file to free the space. Once the file is in cache, Dom0 shares the file's pages with the requesting domain, which then maps the pages into its buffer cache. From that point on, the guest domain may perform read-only file system operations on that file, such as read and mmap without further communication with Dom0. We guarantee that the file's pages will remain in memory for as long as they are used by any guest domain. 
+
+A VM can map a file from the shared buffer cache and thus have access to additional memory for file caching purposes. This region may be larger than the memory of the VM itself, and in such a case memory mapping this file is particularly effective. Moreover, the same region can be mapped multiple times in multiple VMs, thus creating a situation where the cumulative memory appears larger than the actual physical memory.
+
+Once a guest domain finishes its work on the file (either the file is closed or the VM is destroyed), the pages get removed from the guest's buffer cache. The usage counter is reduced for the given file, and it may be evicted once the usage reaches zero.
+
+The following sections provide details of the various OFS subcomponents and quantify OFS's performance with a microbenchmark.
+
+\begin{figure}
+\begin{centering}
+\includegraphics[scale=0.45]{figures/fs_arch_diagram}\caption{\label{fig:fsdiagram}File System Architecture}
+\par\end{centering}
+\end{figure}
+
+
+\subsubsection{On the Guest}
+OFS presents DomU with a regular file system interface. Upon mounting Octopus-FS, the guest domain gets a full view of the directory and file structure of the remote file system, regardless of whether the files are present on the physical machine or not. Depending on the size of the file system, we may store the representation in the guest domain, Dom0 or populate the directory from the file server on every directory access, thereby trading off space and time overheads.
+On file open, a request for the file goes to Dom0. Dom0 will grant the file or return an error forcing the application to fetch the file by other means (e.g. NFS, wget, scp). 
+The file is then granted, the grant references transferred to DomU and mapped in to populate the radix-tree.
+The page grants may be unmapped on file close or on domain exit, if it is expected to be used again soon. We chose domain exit, since our VMs are launched in order to execute one application which mostly uses the large file, and exits once it's done. If the file is present on the local machine, there is no file copying and negligible state copying.
+We work on a file granularity in order to minimize context switching between the domains and do batch grant map-ins. Locality may also be increased and disk seeks decreased on the server when requesting the entire file at once. On the other hand, working on file granularity prevents us from caching files larger than the cache itself, and may leave portions unused. 
+
+\subsubsection{In the hypervisor}
+We leverage the grant tables mechanism to do the core of the page sharing. Since grant tables were not originally meant to support such large volumes of data, we expanded their potential size and added a possibility to grant a page to all VMs (present and future) that are running on the host.
+Hence, if the data is public, the grant table needs to have only as many entries as pages in the cache for this use. In Xen 3.4.1, this means (1 / 512) th of the the size of the cache when the cache is fully shared.
+Memory overhead in Dom0 is one \textit{grant ref} per page. Memory overhead in DomU is a \textit{grant ref}, \textit{struct page} per page and \textit{addr} per mmaped page - still a small fraction of a page. We can reduce the space overhead further by forcing the grant table entries to be consecutive, the overhead for Dom0 and DomU to store \textit{grant refs} drops to two (first and last) per file rather than a \textit{grant ref} per page, though this might result in our grant tables being fragmented.
+
+\subsubsection{On the privileged domain}
+The privileged domain has a kernel level driver, which enables file sharing between guest VMs, and a user level component(rOFS), which fetches the remote file and caches it on the host. 
+The kernel component receives DomU's requests for files, finds the files' pages, grants them and communicates the results back to the guest domain.
+When Dom0 receives a request for a file which is not in the cache, it communicates it to rOFS which attempts to fetch the file. 
+
+The fetch protocol and file server location are configurable parameter provided to rOFS. For performance reasons, protocols are limited to those that can write into RAMFS, but not synchronize to disk. In our setup, we used ftp that writes into RAMFS. Where security is an issue scp is an easy alternative.
+
+rOFS is flexible in handling multiple outstanding requests to different servers. There are tunable parameters which may be varied based on number of servers, network interfaces, disks in the servers, etc'. 
+
+Cache eviction policy is also controlled by rOFS. It may be configured to use a standard eviction policy such as LRU, LFU, etc', or more interestingly, yield control to the scheduler and execute its directions, since it has better insight into future requests. However, a file may be removed from the cache and its space freed only when no VM is using it.
+
+\subsubsection{Performance}\label{sec:OFS_Perf}
+
+Figure~\ref{fig:vsfs_hit} plots the latency for sharing a file that is
+present in the cache of Dom0 with an appliation running on DomU. The
+measurement includes the time from the point when the application on
+DomU requests the file until it can access all of its contents.  For
+comparison, we present a RAM to RAM copy of a file within the same
+domain on the same host. In the absence of page sharing mechanism, a
+file system will need to copy the pages and RAM to RAM copy is the
+best case measurement.
+
+The microbenchmark runs on Xen 3.4.1 on a Sun server with 8 cores and
+16GB of RAM. Figure~\ref{fig:vsfs_hit} shows that OFS is 10 times
+faster than copying. For large files, RAM to RAM copying achieves a
+rate between 825 and 845 MB/s, while OFS is in the range of 8533 to
+9630 MB/s. A more realistic case than RAM to RAM copy is setting up an
+NFS server on Dom0 and a client on DomU. When the files are in RAM in
+Dom0, we measured a 9-fold slowdown compared to RAM to RAM copy,
+achieving transfer rates of 91 to 94 MB/s for large files. We
+attribute this performance degradation to the need to copy 3-fold for
+intra-machine Xen networking and the resulting context switching and
+additional computation.
+
+\begin{figure} [H]
+\begin{centering}
+\includegraphics[scale=0.70]{figures/vsfs_micro_hit}\caption{\label{fig:vsfs_hit}OFS cache hit versus RAM to RAM copy}
+\par\end{centering}
+\end{figure}
+
+A cache miss occurs when the file is not present on the host and must
+be fetched from the file server. We measured the overhead of receiving
+the request, fetching the file from the server, and sharing the file
+with the guest domain. The host is connected to the server with a 1Gb
+network, and the network and server are otherwise idle. The files are
+stripped over two disks with RAID 0. We consider a case where the file
+is in the server's file cache and a case when it is not. In either
+case, the results of this experiment showed that average time
+to read the remote file was 50 times slower than a cache hit.
+
+Overall, in our experimental setup requesting a file which is already
+on the host saves us 99\% of the time compared to fetching from
+a warm server for files 128MB or larger. In the case of a miss, we add
+a modest 1.3\% time to the overhead of reading a file over the
+network.
+
+\subsection{Scheduler Implementation}
+
+Scheduler performs three main functions.  First, it is responsible for
+picking the job from the queue and launching it within the
+cluster. Second, it manages the allocation of files to caches on the
+cluster. Third, it determines whether a job will access its data over
+OFS or a network file system.
+
+\subsubsection{Job Dispatch}
+
+The Scheduler makes a job placement decision once it learns that a
+computational resource has become available on one of the nodes in the
+cluster. The Scheduler selects the job to execute from the queue
+according to one of the algorithms described in
+Section~\ref{sec:AlgoDesc}
+
+To launch the job, the Scheduler ssh'es into Dom0 of the respective
+machine, starts up a new guest VM image and places the application
+launch parameters into XenStore. Once the new guest VM starts up, a
+priviledged scheduling daemon reads the parameters from XenStore, and
+sets up the environment for the job, including mounting OFS if
+necessary. Next, the daemon launches the application and the wrapper
+around it that will notify the Scheduler once the job is done or has
+failed. The average launch time in our system is 18.2 $\pm$ 15.8
+seconds.
+
+Once the Scheduler receives a notification that a job has finished, it
+logs the event, ssh'es into Dom0 of the respective node and performs
+cleanup operations, including destroying the guest VM image. Now a
+computational resource has become available, and job picking process
+repeats. The average cleanup time in our system is 15.1 $\pm$ 21.9
+seconds.
+
+\subsubsection{Cache Management}
+
+The Scheduler also acts as a state machine for the contents of cache
+on every machine in the cluster. For every file in cache it maintains
+the current state and controls the state transfer between: ``file
+being added'', ``running'', ``standby'', and ``removed'' states.
+
+The Scheduler operates within the constraints of machine cache sizes and sizes of the jobs' input files. It obtains the former through machine configuration file also including information such as machine name and the respective number of computational resources. It obtains the latter by polling the file server for sizes of files used by queued up jobs.
+
+The Scheduler adds the file to the cache by launching one of queued up applications which uses the respective files as input. Upon file open request by the application, the file is fetched over to the machine's buffer cache as described in Section~\ref{sec:VSFS_Impl} The fetched file state transfers from ``being added'' to ``running'' as soon as the job is launched. The file stays in ``running'' state while there is at least one job running on the machine that uses the file. Once the last job using the file on the machine finishes, the file transfers to the ``standby'' state.
+
+The Scheduler removes the file from cache by explicitly issuing a request to Octopus-FS on the respective machine (process discussed in more detail in Section~\ref{sec:VSFS_Impl}). Once the request returns successfully, the cache entry for the removed file is erased. Cache eviction happens whenever the Scheduler wants to place a new file into cache on the machine with not enough of available cache space, but with standby files which can be removed to free up space since they are not currently used by any running jobs. FIFO cache eviction policy is used.
+\subsubsection{Cache Usage}
+The Scheduler provides scheduling algorithms with functionality that allows the algorithms to choose whether to run the job using Octopus file system or a network file system, and, thus, whether to leave in cache the files used by the jobs.
+
+Since the Scheduler requires the applications to take the paths to the large input files as command line parameters, according to algorithm's decision, the Scheduler uses the file paths either in Octopus-FS or network file systems.
+
+The ability of the Scheduler to control job placement, cache management and usage gives us the flexibility to explore various scheduling algorithms, discussed in further detail in the next section.
+\subsection{\label{sec:AlgoDesc}``Fair Share'' Algorithms}
+The objective of our scheduling algorithms is to minimize the following two metrics: network bandwidth - the total data amount transferred over the network from file servers to cluster machines, and queue runtime - the total time it takes for every job in the queue to finish running.
+
+There are a number of strategies we employ to achieve the above goals including collocating the computation with cached data, evening out the load across machines through smartly distributing the files in the cluster, and strategically picking the jobs off the queue.
+
+Employing various aspects of above-listed strategies gave rise to a number of algorithm variations. We discuss the options for file allocation calculations in Section~\ref{sec:FileAlloc}. We distinguish the algorithms with varying file allocation recalculation frequencies in Section~\ref{sec:JobSched}. In Sections ~\ref{sec:Starvation}-~\ref{sec:NFSUsage} we introduce special-cases for the algorithms. Finally, in Section~\ref{sec:Together} we put everything together in a single ``fair share'' algorithm flow.
+
+\subsubsection{\label{sec:FileAlloc}File Allocation}
+\begin{table}
+\caption{\label{table:Abbr}File Allocation Calculation Abbreviations}
+\begin{tabular}{| l | l |}
+\hline
+FS & fair file share allocation \\ \hline
+CS & current file share allocation \\ \hline
+M & \# machines \\ \hline
+F & \# files \\ \hline
+J & \# jobs \\ \hline
+q(\textit{file}) & \# jobs in queue using \textit{file} \\ \hline
+r(\textit{file}) & \# running jobs in the cluster using \textit{file} \\ \hline
+st(\textit{file}) & \# standby replications of \textit{file} in the cluster \\ \hline
+\vbox{\hbox{\strut total data}\hbox{\strut  }} & \vbox{\hbox{\strut total size of all files used by queued and}\hbox{\strut running jobs}} \\ \hline
+total standby & total size of all files in standby caches \\ \hline
+\end{tabular}
+\end{table}
+The main idea behind our cache file allocation strategy is to have a share of the cluster allocated to every file according to its fair share. We define the notion of file ``fair'' share in terms of the file popularity among jobs using the file and the size of the file. We explore various options of defining file popularity later in this section.
+$$FS (file)  = \frac{(file\ popularity) \times (file\ size)}{\sum_{all\ jobs}input\ file\ size}$$
+We define ''share allocation'' to be the set of individual file shares of all files in the system.
+
+The goal of the algorithm then is to bring the ``current'' share allocation based on current file distribution in the cluster close to the ``fair'' share allocation, based on the future demand originating from queued jobs and the current state of the cluster.
+
+The algorithm goes as follows:\begin{verbatim}
+once comp resource becomes available:
+(1) calculate ``fair'' share allocation
+(2) for every file that fits into cache on machine
+(3)    calculate current share as-if the job for
+         the file was put on machine
+(4)    calculate diff with ``fair'' share
+(5) pick files with min diff
+(6) break the ties
+(7) pick the first job from queue for chosen file
+\end{verbatim}We explore 3 options for calculating the file popularity: ``replica'', ``running'', and ``standby''. For every option we provide formulas for current and fair share calculations. For the abbreviations used in formulas, please, see Table~\ref{table:Abbr}.
+
+``Replica'' calculation takes into account only the number of times the file was replicated across machine caches. In order to bring the ''fair'' share calculation into the same metric system as current share, we multiply the percentage by the number of machines to obtain the number of machines the file should be replicated on.
+$$CS_{replica} (file) = \#\ file\ replicas\ across\ cluster\ $$
+with respective ``fair'' share calculation:
+$$FS_{replica} (file) \\= \frac{(q(file) + r(file)) \times size(file)}{total\ data} \times M$$
+
+``Running'' option adds to ``replica'' the notion of how many jobs within the machines are using the file. 
+$$CS_{running} (file) =  \frac{r(file) \times size(file)}{total\ data}$$
+with respective ``fair'' share calculation:
+$$FS_{running} (file) = \frac{(q(file) + r(file)) \times size(file)}{total\ data}$$
+
+``Standby'' option adds to ``running'' by taking into account the standby file instances as well as running instances.
+$$CS_{standby} (file) = \frac{(r(file) + st(file)) \times size(file)}{total\ data + total\ standby}$$
+with respective ``fair'' share calculation:
+$$FS_{standby} (file) = \frac{(q(file) + r(file) + st(file)) \times size(file)}{total\ data + total\ standby}$$
+
+For step (3) note that the file allocations change not only for the file that is mock-placed on the machine, but also for the standby files that would need to be removed if the file was placed on the machine.
+
+Step (4), the difference between the ``current'' and ``fair'' share allocations, is defined as the sum of the squared differences of the shares of every file.
+
+Step (6) is executed when there are multiple files that have the same minimal difference with ``fair'' share. We break the ties between them using one of the following strategies: ``size'' - pick the largest file, ``queue'' - pick the file that has the biggest number of jobs queued up for it, ``runtime'' - pick the file with largest total runtime approximated by $q(file) \times size(file)$.
+
+\begin{figure}
+\begin{centering}
+\includegraphics[scale=0.30]{figures/share_calc_example}\caption{\label{fig:share_calc_example}Share allocation calculation example}
+\par\end{centering}
+\end{figure}
+
+We are going to illustrate the algorithm using a simple example. Suppose we have 2 machines (Figure~\ref{fig:share_calc_example}). Machine 1 has 2 jobs running on it, both of which are using file A. In addition, Machine 1 has file B in standby cache. Machine 2 has 1 job running on it, using file B. The queue contains 2 jobs using files A and B respectively. The sizes of the files are 1. Suppose that a job on Machine 2 just finished, so Scheduler is currently picking a job to launch on it.
+
+Step (1). Using ``replica'' option, let's compute the ``fair share'' allocation.
+$$FS(A) = \frac{(1 + 2)\times 1}{5}\times 2 = \frac{6}{5}$$
+Similarly, $FS(B) = \frac{4}{5}$. Then ``fair share'' allocation is ($\frac{6}{5},\frac{4}{5}$). \\ \\
+Steps (2) - (4). Assuming that both of the files A and B can fit into cache, we need to calculate the current allocation for both of them. The current allocation, if job for file A was put on Machine 2, is:
+$$CS_{replica}(A) = 2, CS_{replica}(B) = 2 \Rightarrow (2, 2)$$
+and the difference with fair share is:
+$$ diff_A = (\frac{6}{5} - 2)^2 + (\frac{4}{5} - 2)^2 = 2.08$$ \\
+Similarly, if job for file B was put on Machine 2, the current allocation would be $(1, 2)$ with $diff_B = 1.48$. \\
+Step (4). The minimum difference is $diff_B$.\\
+Step (5). First job on the queue using file B is picked to be scheduled on Machine 2.\\ \\
+The calculations performed by the file allocation algorithm are supported by two matrices of size ($M \times F$) which record for each machine the number of currently running jobs using a given file, and the number of files in standby cache. In addition, we use three $F$-sized arrays containing the number of queued jobs using each file, number of running jobs using each file, and number of file replicas across the cluster. $Total\ data$ and $total\ standby$, incorporating file sizes into summary values, are maintained as well. Hence, the space overhead of the algorithm is linear in $\# machines$ and $\# files$. 
+
+Building those data structures requires an initial cost of $O(F \times (M + J))$. Then, the algorithm iteration cost is $O(F_{st}\times F)$ where $F_{st}$ is the number of standby files on machine with $F_{st} \ll F$. Since only a small subset of files is going to be present on the machine and the number of files should be much smaller than the number of jobs operating on them, we expect the algorithm overhead to be small.
+
+Each of the options for file popularity and share allocation calculation has its strengths and its weaknesses. ``Replica'' is the most conservative and the least changing evaluation of the fair share, but it doesn't take into account how much file is shared within the machine. ``Standby'' makes use of the most information about the cluster, but is fairly volatile and can potentially lead to thrashing. ``Running'' is the middle ground between the above two options. We are going to compare those options against each other in Section~\ref{sec:FairShareCalcComp}.
+
+\subsubsection{\label{sec:JobSched}Job Scheduling}
+We explore 2 job scheduling algorithms based on file ``fair'' share allocations. The algorithms differ in the frequency of file share recalculations: ``eager'' recalculates the ``fair'' and ``current'' shares every time a new job gets scheduled, ``lazy'' - only when it's necessary to bring a new file on machine. ``Lazy'' runs as follows: most of the time it uses one of the job-picking options to select a job for a file already present on the machine. Once there are no more jobs in queue for files on machine, ``lazy'' uses file allocation calculation to identify a new file to bring on machine and schedules first job on queue using that file.\begin{verbatim}once comp resource becomes available:
+(1) pick a job for file already on machine
+      using job picking strategy
+(2) if no more jobs in queue for files on machine
+(3)     use file allocation algorithm to get new file
+(4)     launch first job in queue using that file
+\end{verbatim}
+For step (1) we explore the following job-picking options: ``size'' - pick a job for the largest file, ``queue'' - pick a job for the file that has the biggest number of jobs queued up for it, ``runtime'' - pick a job for a file with longest runtime approximated by $q(file) \times size(file)$. We evaluate the difference between these options in Section~\ref{sec:JobPickComp}.
+
+The worst-case runtime complexity of the ``lazy'' algorithm is $O(J + F_{st}\times F)$. $O(J)$ part comes from scanning the queue to find new job to schedule for the files present on machine. In most cases a job will be found before the end of the queue is reached.
+
+``Eager'' algorithm has an advantage of being as close as possible to the ``fair'' share file distribution. However, due to adjusting to the ``fair'' share allocation, it might be foregoing data locality opportunities. ``Lazy'' algorithm, on the other hand, provides the best data locality results, however, it can diverge from the ``fair'' share allocation substantially over periods of non-recalculation. We are going to evaluate the differences between those 2 algorithms in Section~\ref{sec:FlowOptionsComp}.
+
+\subsubsection{\label{sec:Starvation}Starvation Prevention}
+The proposed algorithms allow for unbounded rearrangement of the queue, potentially resulting in job starvation. We are avoiding starvation by introducing a K-hop clause: if K jobs, located after this one in queue, were scheduled, the job is force scheduled once the next resource becomes available.
+\subsubsection{\label{sec:NFSUsage}NFS Usage}
+There can be a time when the above algorithms do not return the job to schedule, even though there are still jobs in the queue. It can happen, for example, when there is not enough space in the cache to bring in another file in either regular algorithm flow or when the job is force scheduled. To prevent resource idleness, we propose to still run the job, but to fetch its files through the present network file system, avoiding the Octopus file system.
+\subsubsection{\label{sec:Together}Putting It All Together: Fair Share Algorithm}
+Putting all of the above-discussed points together, we obtain the following ``fair share'' algorithm: \begin{verbatim}
+if (first job in queue was skipped K times)
+  force-schedule the job via 
+    OFS if there is enough space in cache
+    NFS otherwise
+else
+  execute Eager or Lazy algorithm
+  if job was returned
+       launch job through Octopus-FS
+  else
+       launch job through NFS
+\end{verbatim}
