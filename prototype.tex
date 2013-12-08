@@ -41,7 +41,7 @@ We would modify the SensorManager to include functions that take an additional p
 
 \subsubsection{Changes to OS}
 
-TODO
+TODO: I'm not confident about describing these changes
 
 \begin{figure}[h]
 	\includegraphics[width=9cm]{android_architecture_current.png}
@@ -59,7 +59,7 @@ TODO
 
 We evaluated two options as our low-powered sensor platform. Our first option is a Texas Instruments MSP430 micro-controller. It has the advantage of being very low-power, but it has limited memory and cannot perform complex analysis of sensor data in real-time. In our preliminary tests, the MSP430 was unable to run the Fast Fourier Transformations necessary for low-pass filtering sensor data in real-time. Our second option is a Texas Instruments Stellaris LM4F120H5QR micro-controller powered by a Cortex-M4 CPU. It can batch a higher number of accelerometer readings and perform more complex data analysis such as FFT-based low-pass filtering in real time, but it has a greater energy footprint.
 
-TODO:Communication with Nexus 4.  Use of UART over mic port to wake up device (I'm not sure how this works)
+TODO:Communication with Nexus 4. Use of UART over mic port to wake up device (I'm not sure how this works)
 
 \subsection{Power Profiles} \label{subsec:powerProfiles}
 
