@@ -98,6 +98,12 @@ Section 5 -- Experimental setup
 
     - stand up/sit down
 
+NEW - add a table or figure(s) that shows recall and precision for
+    each application under always on.  This is basically just to give
+    a sense of how good the apps are.  Assuming that the recall and
+    precision did not vary much between groups, just choose one as the
+    basis for these numbers.
+    
   - Describe robot schedule/drill/regiment/routine    
     
     - talk about frequency of each action and what it is meant to represent
@@ -109,8 +115,151 @@ Section 5 -- Experimental setup
     - Power model
             	
 
+
 Section 6 -- Results
 
+The evaluation answers the following questions:
+
+1) Are there applications/usage scenarions that are supported
+efficiently with duty cycling.  What are the power saving achieved by
+this approach?
+
+2) What are the power savings achievable with batching + duty cycling.
+
+3) Under what condifitions having a wakeup condition improves
+performace(over the previous approaches), and by how much?
+
+4) What is the benefits of having different wake up conditions
+(filters)?  Do different apps require different wake up conditions,
+and how much difference does it make? this question asks whether the
+same filter (and same filter configuration) can do well for all apps?
+another way to think about it is, how much extra savings can you get
+by selecting what filter to use for each app.  This is basically a
+proxy for a comparison between predefined activity and predefined
+filtering.
+
+5) What benefits apps derive from being able not just to select the
+filter, but to configure it?  this question asks whether a single
+threshold value can do well for mutliple apps?  another way to think
+about it is, how much extra savings can you get by configuring the
+threshold.
+
+6) Are the best filter/threshold combinations dependent on the usage
+scenario.
+
+
+7) How sensitive are the energy savings to the configuration thresholds
+used in the filter.
+
+
+
+-Subsection 6.1  Energy savings
+
+this section will answer the first 3 questions.
+
+It starts by showing two tables with the info bellow, one for group 1 and one for group 3.
+
+
+		steps		wakeup/seatdown		headbut
+		100% 99% etc	100% 99% etc		100% 99% etc	
+always on		
+
+duty cycling
+     1 sec
+     2 sec
+     4 sec
+     8 sec
+     etc
+batching
+     1 sec
+     2 sec
+     4 sec
+     8 sec
+     etc
+best wakeup condition (for each app, just chose the filter that performs best and provide the energy consumption for the given recall. do not name the filter, we will deal with that latter.)
+    
+
+The text then points to the appropriate parts of the tables to answer
+questions 1-3 above.
+
+Specifically:
+
+- it points out any condition for which always on is close to optimal,
+e.g., frequent condition that occurs all the time (steps in the 90% group)
+
+- it points out any condition for which duty cycling works well, and
+points out that if done wrong it actually consumes much more energy,
+e.g., application where there are many events of interest so that if
+you miss a few it is no big deal (I miss the first 2 steps, but find
+the third and then stay on to count all the rest.  If there are 100
+steps, missing 2 is no big deal).
+
+- It points out how much batching is necessary to achieve close to
+optimal for those cases where always on sucks.  It also points out the
+upper bound in the savings of this approach, and the latency
+introduced in detections.
+
+- it points out the additional saving of the best wakeup condition,
+and discuses the scenarios where it makes sense, e.g., infrequent
+events.
+
+- Subsection 6.2 Predefined action vs predefined filter
+
+This section answers questions 4. 
+
+For this purpose, we assume that step detection is the one action that
+our hw supports and we compare that with the benefits of custom filter
+for each of the other 2 apps.
+
+Present a table (or figure) with the following data:
+
+   
+			headbut			wakeup/seatdown
+			group1 group2 group3	group1 group2 group3
+
+step detection
+
+best custom filter
+
+The table will sow the energy for each case.  Ideally, the performance
+of the "best custom filter" would be significantly higher than that of
+the algorithm that is optimized for step detection.  Use a single
+setup for step deterction, which ever worked best, but keep it the
+same for all groups and apps.  This is basically mimicing an API that
+sends a callback when it thinks that a step has been detercted but
+which does not provide the programmer any control over anything else.
+
+- Subsection 6.3 Filter configuration
+
+This section will answer question 5.
+
+I am not sure we have enough data to answer this question.
+
+To show this we would limit ourselfs to 2 apps that use the same
+filter.  You can then present energy savings for app2 under two
+conditions: 1) running under the setup that is best for app2; and 2)
+running under the setup that is best for app2.  This experiment shows
+that it is not enough to choose the "right" filter, you also need to
+configure it appropriately.
+
+
+- Subsection 6.4 Usage dependance
+
+This section answers question 6.  This section makes sense if the best
+threshold and filter combination for an application changes between
+groups.  If this is not the case, just drop the section and question
+6.  
+
+
+- Subsection 6.5 Threshold sensitivity
+
+This section answers question 7.  It presents a plot that illustrates
+how the energy and recall varies for the best filter option for each
+of the 3 applications.  The objective is to be able to comment on how
+crushial it is to get the threshold right.  A good result is that the
+treshold is important but somewhat forgiving. 
+
+ 
 
 
 Section 7 -- Related work
