@@ -4,7 +4,7 @@
 Smart phones and tablets are overwhelmingly used today to run
 interactive foreground applications, such as games and web browsers.
 As a result, current mobile devices are optimized for a use case where
-applications are used intermitently during the day in sessions that
+applications are used intermittently during the day in sessions that
 last several minutes.  For example, Alice takes a little break to pick
 up her phone, check the weather, read the latest news story and play a
 game for a few minutes, and then puts it away to go back to work.  To
@@ -27,19 +27,21 @@ To improve support for continuous sensing applications the research
 community has proposed the use of fully programmable heterogeneous
 architectures~\cite{reflex}.  In these approaches, developers
 partition their applications to offload the initial filtering stages
-of the application to the low-power processor.  When an event of
-interest is detected, the rest of the architecture wakes up.  While
-the ability to run custom code on the low-power hardware provides
-great flexibility, the significant complexity inherent in this
-approach has prevent (so far) its adoption in commercial devices.
-Instead, smartphone manufacturers have recently incorporated low-power
+of the application to a low-power processor (or a hierarchy of
+processors).  When the code running on the low power processor detects
+the occurrence of event of interest, it proceeds to wake up the phone
+and passes control to the rest of the application.  While the ability
+to run custom code on the low-power hardware provides great
+flexibility, the significant complexity inherent in this approach has
+prevent (so far) its adoption in commercial devices.  Instead,
+smartphone manufacturers have recently incorporated low-power
 processors into their architectures, but have limited application
-developers to APIs that provide limited fixed functionality, including
+developers to APIs that provide fixed functionality, including
 batching sensor readings and recognizing a small number of predefined
-activities.
+activities that can be used as {\em wake up} conditions.
 
 In this paper we argue that these APIs are insufficient in order to
-support a rich and flexible set of continous monitoring applications.
+support a rich and flexible set of continuous monitoring applications.
 Batching is inefficient for applications that depend on infrequent
 events and is not appropriate for applications that require crisp
 response time.  On the other hand, an API based on activity
@@ -51,11 +53,28 @@ among a set of predefined filters that implement commonly used
 algorithms (e.g., FFT, exponential average) with parameters that can
 be configured by the developer to meet application requirements.  By
 providing access to lower-level filters, as oppose to higher-level
-activities, our approach provides a better balance between flexibility
-and ease of deployment.  We envision that control over filters could
-be leveraged by user-level activity recognition libraries that could
-then provide simple hucks for a large number of activities.
+activity detectors, our approach provides a better balance between
+flexibility and ease of deployment.  By letting the developer select
+and configure the filtering algorithm used by the low-power hardware,
+our approach empowers developers to design a broad set of wake up
+conditions that can be used to detect a wide range of activities.
+This functionality could be leveraged by user-level activity
+recognition libraries that could then provide simple wake up
+conditions for a large number of activities.
 
-Experiments with out prototype implementation, which extends a Nexus 4
-phone with a low-power sensor board show that:
+To evaluate the benefits of our approach we developed a prototype
+implementation that extends a Nexus 4 phone with a low-power sensor
+board.  Our experiments with various accelerometer-based applications
+show that: {\em TODO} summarize results.
+
+The rest of this paper is organized as follows.
+Section~\ref{sec:background}, discusses existing approaches to
+continuous sensing and their limitations.  Section~\ref{sec:approach}
+introduces our new approach for continuous monitoring, which lets
+developers configure the filters used to implement wake up conditions.
+Section~\ref{sec:prototype} describes our Nexus 4-based prototype.
+Sections~\ref{sec:experimentalSetup} and~\ref{sec:results} present our
+experimental setup and the results from our evaluation.  Finally,
+Sections~\ref{sec:related} and~\ref{sec:conclusions} describe our work
+in the context of related work and conclude the paper.
 
