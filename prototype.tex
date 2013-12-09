@@ -2,21 +2,18 @@
 \section{Prototype}
 \label{sec:prototype}
 
-We chose to focus our efforts on accelerometer-based applications because there exists a wide-range of such applications available on the various mobile application markets. We considered applications that use the device's camera or microphone, as they are also fairly common. However, a scenario where multiple applications are using the camera or the microphone concurrently seemed fairly unrealistic.
+\begin{figure}[t]
+	\includegraphics[width=8.5cm]{prototype_architecture.png}
+	\caption{High-level architecture of our prototype implementation}
+    \label{fig:prototypeArchitecture}
+\end{figure}
 
-\subsection{Sensor Data Filters}
+We implemented a prototype of our system using a Google Nexus 4 running Android 4.2.2. The low-power smart sensor is implemented using a Texas Instruments micro-controller board attached to an accelerometer sensor. The Nexus 4 and TI board communicate over the UART port made available by the Nexus 4 debugging interface. Figure \ref{fig:prototypeArchitecture} shows a high-level diagram of the prototypes architecture.
 
-We implemented three types of sensor data filters (or wakeup conditions) of varying complexity. The simplest filter is based on thresholding over raw accelerometer readings. Such a filter is satisfied if the detected acceleration exceeds the threshold. However, we noticed that accelerometer data is particularly noisy. Our expectation was that a simple thresholding filter would be satisfied more frequently than necessary because of the noise present in the sensor data, potentially causing unnecessary device wakeups. Our second and third filters are based on threshold on data that has been passed through a low-pass filter in order to remove some of the noise (TODO: I think this will be confusing. I am using the word filter multiple times with different meanings). The second filter uses a computationally cheap low-pass filter based on an exponential moving average. The third filter uses a more accurate and computationally expensive low-pass filter based on Fast Fourier Transformations.
+We chose to focus our efforts on the accelerometer sensor because of its relative simplicity and the availability of a wide range of accelerometer-based applications on various mobile application markets. Nevertheless, the approach can be extended to other sensors such as the microphone, GPS or WiFi. However, extending the prototype to work with higher bandwidth sensors like the camera would require a higher bandwidth data bus such as $I^2C$. 
 
-\subsection{Software Changes}
 
-This subsection provides an overview of the API that would be available to application developers and a description of the changes that needed to be made to the operating system.
- 
-\subsubsection{API}
-
-To prevent a steep learning curve, our goal was to provide an API very similar to Android's existing sensors API. Normally, in order to receive sensor data, an application needs to register a listener (i.e. an implementation of the SensorEventListener interface) for a specific sensor with Android's SensorManager. Figure \ref{fig:androidSensorCodeNormal} shows a code example of a typical application registering a listener with the Android SensorManager for accelerometer readings.
-
-We would modify the SensorManager to include functions that take an additional parameter that specifies which wake-up condition to be used. The available types of wakeup conditions would be predefined implementation of a WakeUpCondition interface. Figure \ref{fig:androidSensorCodeModified} shows an example of the modified code to include a wakeup condition that is satisfied when the acceleration on the x-axis exceeds $12 m/s^2$.
+\subsection{Google Nexus 4}
 
 \begin{figure*}[t]
 	\begin{verbatim}
@@ -39,9 +36,54 @@ We would modify the SensorManager to include functions that take an additional p
     \label{fig:androidSensorCodeModified}
 \end{figure*}
 
-\subsubsection{Changes to OS}
+On the Nexus phone we extended Android's SensorManager to include the new features made available by our system. To prevent a steep learning curve, our goal was to provide an API very similar to Android's existing sensors API. Normally, in order to receive sensor data, an application needs to register a listener (i.e. an implementation of the SensorEventListener interface) for a specific sensor with Android's SensorManager. Figure \ref{fig:androidSensorCodeNormal} shows a code example of a typical application registering a listener with the Android SensorManager for accelerometer readings. We extended the Sensor Manager to include functions that take an additional parameter that specifies which wake-up condition to be used. The available types of wakeup conditions, described in detail in Subsection \ref{sec:sensorDataFilters}, are a set predefined implementations of a WakeUpCondition interface. Figure \ref{fig:androidSensorCodeModified} shows an example of the modified code to include a wakeup condition that is satisfied when the raw x-axis acceleration exceeds $12 m/s^2$.
 
-TODO: I'm not confident about describing these changes
+We also created a UART stub to facilitate the communication between the mobile phone and the smart sensor board. The UART stub is called when the smart sensor board detects an event based on its wakeup condition. In turn, the UART stub notifies the SensorManager using an Android Intent(TODO: reference to Android Intent documentation?).
+
+For our prototype we did not have to modify the operating system on the phone in any way. Because the current prototype uses the UART port for communication with the smart sensor, we were able to constrain our implementation to the user space. An integrated implementation would very likely make use of the higher bandwidth bus such as the $I^2C$ and require a custom driver and possibly modification to the operating system.
+
+\begin{table*}[t]
+	\begin{tabular}{| p{7cm} | l | l |}
+		\hline
+		State & Average Power Consumption (mW) & Average Duration \\ \hline
+	%    TI MSP430 & Awake & 3.6 & N/A \\ \hline
+	%    TI Stellaris & Awake & 49.4 & N/A \\ \hline
+		Awake, running a pedometer application with data from the internal accelerometer & 323 & N/A \\ \hline
+		Asleep & 9.7 & N/A \\ \hline
+		Asleep-to-Awake Transition & 384 & 1 second \\ \hline
+		Awake-to-Asleep Transition & 341 & 1 second \\ \hline
+	\end{tabular}
+	\caption{Power Profile for the Google Nexus 4}
+	\label{table:powerProfileNexus}
+\end{table*}
+
+We power profiled the Google Nexus 4. The results are summarized in Table \ref{table:powerProfileNexus}. During all the measurements, the device's screen was turned off. Additionally, we noticed that changes in signal strength for GSM, WiFi and GPS resulted in fluctuations in the power consumption of the device. To prevent these factors from affecting our power profile, we decided to run all the power measurements with GSM, WiFi and GPS turned off. While the device is sleeping, its power consumption is very low, consuming only 9.7 mW. While awake, the power consumption is significantly higher, averaging 323 mW. During our power measurements we noticed that additional energy is consumed during transitions between the asleep and awake states. Each transition takes about 1 second. During a wakeup transition, the average power consumption goes up to 384 mW, while during an awake-to-asleep transition the average power consumption rises to 341 mW.
+
+
+\subsection{Smart Sensor Board}
+
+On the low-power smart sensor board, the prototype consists of a driver that talks to the accelerometer sensor, a set of filtering algorithms, a controller, and an UART driver for communicating with the phone. The controller orchestrates the execution of the filters, and uses the UART driver to wake up the phone when a wakeup condition is satisfied. The UART driver is in charge of waking up the phone, running a shell program that issues a Android Intent to start the UART stub, and passing the sensor readings to the main device. 
+
+\subsubsection{Sensor Data Filters}
+\label{sec:sensorDataFilters}
+
+We implemented three types of sensor data filters (or wakeup conditions) of varying complexities. All wakeup conditions are based on thresholding over some accelerometer readings. The wakeup conditions differ in what readings are checked against the threshold value.
+
+The \emph{raw acceleration wakeup condition} is the simplest and requires the least amount of computation. The wakeup condition is satisfied if the raw acceleration exceeds the threshold. The threshold value is the only parameter for this wakeup condition. In our preliminary tests, we noticed that accelerometer data is particularly noisy. Our expectation was that a simple threshold filter over raw acceleration readings would be satisfied more frequently than necessary because of the noise present in the sensor data, potentially causing unnecessary device wake ups. 
+
+The \emph{EMA LPF wakeup condition} removes some of the noise from the sensor data and is computationally cheap, requiring only several algebraic operations for every sensor reading. In this wakeup condition the raw accelerometer data is passed through a low-pass filter based on an exponential moving average before being checked against the threshold. The two parameters that can be set for this wakeup condition are the threshold value and an alpha value between 0 and 1. The alpha value controls the "smoothness" of the filtered data (TODO: rephrase).
+
+The \emph{FFT LPF wakeup condition} is more accurate at removing noise from the sensor data. However, it is computationally expensive. In this wakeup condition the raw accelerometer data is passed through a low-pass filter based on Fast Fourier Transformations before being checked against the threshold. Two parameters can be set for this wakeup condition: the threshold value and a relative energy level value. The relative energy value indicates the percentage of the original energy present in the raw acceleration that is to be removed during filtering.  
+
+\subsubsection{Hardware Options}
+
+We evaluated two options as our low-powered sensor platform. 
+
+Our first option is a Texas Instruments MSP430 micro-controller. It has the advantage of being very low-power, consuming only 3.6 mW while awake. However, it has limited memory and cannot perform complex analysis of sensor data in real-time. In our tests, the MSP430 was unable to run the Fast Fourier Transformations necessary for low-pass filtering sensor data in real-time. 
+
+Our second option is a Texas Instruments Stellaris LM4F120H5QR micro-controller powered by a Cortex-M4 processor. It can batch a higher number of accelerometer readings and run all our wakeup conditions in real-time, including the one using FFT-based low-pass filtering. However, this micro-controller has an energy footprint an order of magnitude greater than the MSP430, consuming an average of 49.4 mW while awake.
+
+
 
 \begin{figure}[h]
 	\includegraphics[width=9cm]{android_architecture_current.png}
@@ -54,30 +96,3 @@ TODO: I'm not confident about describing these changes
 	\caption{Proposed architecture based on Android 4.4 sensor system}
     \label{fig:androidArchProposed}
 \end{figure}
- 
-\subsection{Hardware}
-
-We evaluated two options as our low-powered sensor platform. Our first option is a Texas Instruments MSP430 micro-controller. It has the advantage of being very low-power, but it has limited memory and cannot perform complex analysis of sensor data in real-time. In our preliminary tests, the MSP430 was unable to run the Fast Fourier Transformations necessary for low-pass filtering sensor data in real-time. Our second option is a Texas Instruments Stellaris LM4F120H5QR micro-controller powered by a Cortex-M4 CPU. It can batch a higher number of accelerometer readings and perform more complex data analysis such as FFT-based low-pass filtering in real time, but it has a greater energy footprint.
-
-TODO:Communication with Nexus 4. Use of UART over mic port to wake up device (I'm not sure how this works)
-
-\subsection{Power Profiles} \label{subsec:powerProfiles}
-
-We performed power measurements on a Google Nexus 4 running Android 4.2.2. The results are summarized in Table \ref{table:powerMeasurements}. During all the measurements, the device's screen was turned off. Additionally, we noticed that changes in signal strength for GSM, WiFi and GPS resulted in fluctuations in the power consumption of the device. To prevent these factors from affecting our results, we decided to run all the power measurements with GSM, WiFi and GPS turned off.
-
-The power measurements for both micro-controllers are also presented in Table \ref{table:powerMeasurements} on page \pageref{table:powerMeasurements}.
-
-\begin{table*}[t]
-\begin{tabular}{| l | p{7cm} | l | l |}
-    \hline
-    Device & State & Average Power Consumption (mW) & Average Duration \\ \hline
-    TI MSP430 & Awake & 3.6 & N/A \\ \hline
-    TI Stellaris & Awake & 49.4 & N/A \\ \hline
-    Nexus 4 & Awake, running a pedometer application with data from the internal accelerometer & 323 & N/A \\ \hline
-    Nexus 4 & Asleep & 9.7 & N/A \\ \hline
-    Nexus 4 & Asleep-to-Awake Transition & 384 & 1 second \\ \hline
-    Nexus 4 & Awake-to-Asleep Transition & 341 & 1 second \\ \hline
-\end{tabular}
-\caption{Power Measurements}
-\label{table:powerMeasurements}
-\end{table*}

@@ -5,7 +5,7 @@ Our aim is to enable low-power, continuous sensing tasks on mobile processors.
 As described earlier, the current approaches for low power sensing trade ease of
 programming with the generality of the approach. On the one hand, fully
 programmable offloading of code to low-power processors allows developing
-arbitrary applications [cite]. However, it raises several challenges, such as
+arbitrary applications [TODO:cite]. However, it raises several challenges, such as
 requiring a split or complete redevelopment of application functionality, and
 carefully choosing the code that can be offloaded so that it can run in real
 time. The latter is complicated because it depends on the type and functionality
@@ -46,9 +46,9 @@ determine a common set of filters that are needed for these applications. In our
 experience, while the application logic varies widely, their sensor event
 detection algorithms are relatively simple and have commonalities. For example,
 an accelerometer-based fall detector looks for acceleration that represents
-free-fall, followed by a spike in acceleration~[cite]. Similarly, a step
+free-fall, followed by a spike in acceleration~[TODO:cite]. Similarly, a step
 detection algorithm looks for a local maxima within a certain range of
-acceleration~[cite]. 
+acceleration~[TODO:cite]. 
 
 These applications often perform some common initial steps. For example, several
 accelerometer-based applications initially check whether the acceleration
@@ -60,10 +60,3 @@ are each checking for these events independently, possibly resulting in
 redundant computation. Common steps such as thresholding and low-pass filtering
 are excellent candidates for event filters.
 
-\textbf{The following text should be moved to the next section.}
-
-We chose to focus our effort on accelerometer-based applications because there
-exists a wide variety of such applications in the various mobile application
-markets. Applications using the device's camera or microphone are fairly common
-as well. However, it is quite rare that multiple applications are using these
-sensors simultaneously.
