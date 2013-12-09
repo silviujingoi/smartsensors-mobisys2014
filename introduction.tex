@@ -3,56 +3,58 @@
 
 Smart phones and tablets are overwhelmingly used today to run
 interactive foreground applications, such as games and web browsers.
-As a result, current mobile devices are optimized for a scenario where
-applications are used during sessions that last several minutes and
-are interspersed along the day.  For example, Alice takes a little
-break to pick up her phone, check the weather, read the latest news
-story and play a game for a few minutes, and then puts it away to
-go back to work.  To extend battery life, current mobile devices are
-engineered to go into sleep state for most of the day when they are
-not supporting interactive usage.
+As a result, current mobile devices are optimized for a use case where
+applications are used intermitently during the day in sessions that
+last several minutes.  For example, Alice takes a little break to pick
+up her phone, check the weather, read the latest news story and play a
+game for a few minutes, and then puts it away to go back to work.  To
+maximize battery life, current mobile devices are engineered to go into
+sleep state for most of the day when they are not supporting
+interactive usage.
 
 Unfortunately, most mobile platforms are a poor match for a growing
-class of mobile applications that performs continuous background
+class of mobile applications that perform continuous background
 sensing.  Examples range from medical and health monitoring
-applications, such as pedometers and fall detectors, to applications
-that require participatory sensing, such as pollution and traffic
-monitoring.  While the processing demands of these applications is
-modest, they require the periodic collection of sensor readings which
+applications, such as pedometers and fall detectors, to participatory
+sensing applications, such as pollution and traffic monitoring.  While
+the processing demands of these applications is modest most of the
+time, they require the periodic collection of sensor readings which
 prevents the device from going to sleep for extended periods of time.
 As a result, applications that perform continuous sensing may cause
 the device's battery to drain within several hours.
 
 To improve support for continuous sensing applications the research
 community has proposed the use of fully programmable heterogeneous
-architectures.  In these approaches, developers partition their
-applications to offload the initial filtering stages of the
-application to the low-power processor.  When an event of interest is
-detected, the rest of the architecture wakes up.  While the ability to
-run custom code on the low-power hardware provide great flexibility,
-the significant complexity inherent in this approach has prevent its
-adoption in commercial devices.  Instead, smartphone manufacturers
-have recently incorporated low-power processors into their
-architectures, but have limited application developers to APIs that
-provide limited fixed functionality, including batching sensor
-readings and recognizing a small number of predefined activities.
+architectures~\cite{reflex}.  In these approaches, developers
+partition their applications to offload the initial filtering stages
+of the application to the low-power processor.  When an event of
+interest is detected, the rest of the architecture wakes up.  While
+the ability to run custom code on the low-power hardware provides
+great flexibility, the significant complexity inherent in this
+approach has prevent (so far) its adoption in commercial devices.
+Instead, smartphone manufacturers have recently incorporated low-power
+processors into their architectures, but have limited application
+developers to APIs that provide limited fixed functionality, including
+batching sensor readings and recognizing a small number of predefined
+activities.
 
-In this paper we argue that the support provided by these API is
-insufficient.  Batching is inefficient for applications that detect
-infrequent events and is not be appropriate for applications that
-require crisp response time.  On the other hand, an API based on
-activity recognition provides little flexibility and no support for
-application interested in events that are not covered by the set of
+In this paper we argue that these APIs are insufficient in order to
+support a rich and flexible set of continous monitoring applications.
+Batching is inefficient for applications that depend on infrequent
+events and is not appropriate for applications that require crisp
+response time.  On the other hand, an API based on activity
+recognition provides little flexibility with no support for
+applications interested in events that are not covered by the set of
 predefined activities.  Instead, we argue that the API should expose
 access to filter-level functionality, enabling programmers to chose
-among a set of predefined filters that implement commonly algorithms
-(e.g., FFT, exponential average) that can be calibrated by the
-application developer.  By providing access to lower-level filters, as
-oppose to higher-level activities, our approach provides a better
-balance between flexibility and ease of deployment.  We envision that
-control over filters could be leveraged by user-level activity
-recognition libraries that could then provide simple APIs for a large
-number of activities.
+among a set of predefined filters that implement commonly used
+algorithms (e.g., FFT, exponential average) with parameters that can
+be configured by the developer to meet application requirements.  By
+providing access to lower-level filters, as oppose to higher-level
+activities, our approach provides a better balance between flexibility
+and ease of deployment.  We envision that control over filters could
+be leveraged by user-level activity recognition libraries that could
+then provide simple hucks for a large number of activities.
 
 Experiments with out prototype implementation, which extends a Nexus 4
 phone with a low-power sensor board show that:
