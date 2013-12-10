@@ -6,13 +6,13 @@ Mobile application developers can choose among several existing approaches when
 attempting to perform continuous sensing. The availability of some of these
 approaches depends on the mobile device's hardware and operating system.
 
-\subsection{Power On}
+\subsection{Always On}
 
 The basic approach for continuous sensing is to keep the mobile device
-\emph{powered on} all the time. As an example, on the Android operating system,
-the sensing application acquires a wake lock to prevent the device from sleeping
-and registers a listener for a specific sensor. Whenever the sensor produces a
-new reading, the operating system passes the reading to the application via a
+\emph{always on}. As an example, on the Android operating system, the sensing
+application acquires a wake lock to prevent the device from sleeping and
+registers a listener for a specific sensor. Whenever the sensor produces a new
+reading, the operating system passes the reading to the application via a
 callback function. This operation continues until the listener is unregistered
 or until the wake lock is released. The benefit of this approach is that it
 achieves the highest accuracy because all the sensor data is delivered to the
