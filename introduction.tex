@@ -1,24 +1,24 @@
 
 \section{\label{sec:Introduction}Introduction}
 
-Smart phones and tablets are overwhelmingly used today to run
-interactive foreground applications, such as games and web browsers.
-As a result, current mobile devices are optimized for a use case where
-applications are used intermittently during the day in sessions that
-last several minutes.  For example, Alice takes a little break to pick
-up her phone, check the weather, read the latest news story and play a
+Today smart phones and tablets are used primarily to run interactive
+foreground applications, such as games and web browsers.  As a result,
+current mobile devices are optimized for a use case where applications
+are used intermittently during the day, in sessions that last for
+several minutes.  For example, Alice takes a little break to pick up
+her phone, check the weather, read the latest news story and play a
 game for a few minutes, and then puts it away to go back to work.  To
-maximize battery life, current mobile devices are engineered to go into
-sleep state for most of the day when they are not supporting
-interactive usage.
+maximize battery life, current mobile devices are engineered to go
+into sleep state for most of the day when they are not supporting
+such interactive usage.
 
 Unfortunately, most mobile platforms are a poor match for a growing
 class of mobile applications that perform continuous background
 sensing.  Examples range from medical and health monitoring
 applications, such as pedometers and fall detectors, to participatory
 sensing applications, such as pollution and traffic monitoring.  While
-the processing demands of these applications is modest most of the
-time, they require the periodic collection of sensor readings which
+the processing demands of these applications are modest most of the
+time, they require periodic collection of sensor readings, which
 prevents the device from going to sleep for extended periods of time.
 As a result, applications that perform continuous sensing may cause
 the device's battery to drain within several hours.
@@ -33,36 +33,36 @@ the occurrence of event of interest, it proceeds to wake up the phone
 and passes control to the rest of the application.  While the ability
 to run custom code on the low-power hardware provides great
 flexibility, the significant complexity inherent in this approach has
-prevent (so far) its adoption in commercial devices.  Instead,
-smartphone manufacturers have recently incorporated low-power
-processors into their architectures, but have limited application
-developers to APIs that provide fixed functionality, including
-batching sensor readings and recognizing a small number of predefined
-activities that can be used as {\em wake up} conditions.
+so far prevented its adoption in commercial devices.  Instead,
+smartphone manufacturers, realizing the potential of sensing
+applications, have recently incorporated low-power processors into
+their architectures, but have limited application developers to APIs
+that provide fixed functionality, by either batching sensor readings
+or recognizing a small number of predefined activities that can be
+used as {\em wake up} conditions~\cite{android4.4,motox,nexus5}.
 
-In this paper we argue that these APIs are insufficient in order to
-support a rich and flexible set of continuous monitoring applications.
+In this paper we argue that these APIs are insufficient for supporting
+a rich and flexible set of continuous monitoring applications.
 Batching is inefficient for applications that depend on infrequent
 events and is not appropriate for applications that require crisp
-response time.  On the other hand, an API based on activity
-recognition provides little flexibility with no support for
-applications interested in events that are not covered by the set of
-predefined activities.  Instead, we argue that the API should expose
-access to filter-level functionality, enabling programmers to chose
-among a set of predefined filters that implement commonly used
-algorithms (e.g., FFT, exponential average) with parameters that can
-be configured by the developer to meet application requirements.  By
-providing access to lower-level filters, as oppose to higher-level
-activity detectors, our approach provides a better balance between
-flexibility and ease of deployment.  By letting the developer select
-and configure the filtering algorithm used by the low-power hardware,
-our approach empowers developers to design a broad set of wake up
-conditions that can be used to detect a wide range of activities.
-This functionality could be leveraged by user-level activity
-recognition libraries that could then provide simple wake up
+response time.  An activity recognition API provides little
+flexibility with no support for applications interested in events that
+are not covered by the set of predefined activities.  Instead, we
+argue that the API should expose access to filter-level functionality,
+enabling programmers to chose among a set of predefined filters that
+implement commonly used algorithms (e.g., FFT, exponential average)
+with parameters that can be configured by the developer to meet
+application requirements.  By providing access to lower-level filters,
+as opposed to higher-level activity detectors, our approach provides a
+better balance between flexibility and ease of deployment.  By letting
+the developer select and configure the filtering algorithm used by the
+low-power hardware, our approach enables developers to design a broad
+set of wake up conditions that can be used to detect a wide range of
+activities.  This functionality could be leveraged by user-level
+activity recognition libraries that could then provide simple wake up
 conditions for a large number of activities.
 
-To evaluate the benefits of our approach we developed a prototype
+To evaluate the benefits of our approach, we have developed a prototype
 implementation that extends a Nexus 4 phone with a low-power sensor
 board.  Our experiments with various accelerometer-based applications
 show that: {\em TODO} summarize results.
