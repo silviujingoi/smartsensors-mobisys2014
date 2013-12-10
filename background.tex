@@ -2,18 +2,105 @@
 \section{Background}
 \label{sec:background}
 
-Mobile application developers can choose between several approaches when attempting to perform continuous sensing. The availability of some of these approaches is dependent upon the mobile device's hardware and overlaying operating system. 
+Mobile application developers can choose between several approaches
+when attempting to perform continuous sensing. The availability of
+some of these approaches is dependent upon the mobile device's
+hardware and overlaying operating system.
 
-The most basic approach that can be used on any sensor-enabled mobile device is to have the mobile device always on. On the Android operating system, the application would acquire a wake lock to prevent the device from sleeping and register a listener for a specific sensor. Whenever the sensor produces a new reading, the operating system passes the reading to the application via a callback. This will continue to happen until the listener is unregistered or until the wake lock is released. This approach has the potential to achieve the highest possible event of interest recall because all the sensor data is passed to the application(s). However, because the device does not experience any sleep periods, the power consumption of this approach is extremely high.
+The most basic approach that can be used on any sensor-enabled mobile
+device is to have the mobile device always on. On the Android
+operating system, the application would acquire a wake lock to prevent
+the device from sleeping and register a listener for a specific
+sensor. Whenever the sensor produces a new reading, the operating
+system passes the reading to the application via a callback. This will
+continue to happen until the listener is unregistered or until the
+wake lock is released. This approach has the potential to achieve the
+highest possible event of interest recall because all the sensor data
+is passed to the application(s). However, because the device does not
+experience any sleep periods, the power consumption of this approach
+is extremely high.
 
-To avoid keeping the device awake for extended periods of time, a duty cycling approach can be used. In such an approach, the device is allowed to sleep for fixed, usually regular, periods of time. An application can implement duty cycling by scheduling an alarm using the system's alarm service and ensuring it does not have have a wake lock acquired. The application is then notified by the operating system when the sleep period ends. At this time, the application can collect sensor readings for a period of time, then reschedule another alarm. This approach has a couple of apparent drawbacks. First off, events of interest will not be detected if they occur while the device is sleeping as the application does not receive any sensor data that would have been produced at those times. Secondly, the device might wake-up to discover that the event of interest is not actually occurring. This approach may be slightly improved in terms of event of interest recall by dynamically adjusting the length of time readings are collected for. If after a wake-up the application detects an event of interest, it can continue to collect sensor readings until events of interest are no longer being detected, at which time it can return to its regular duty cycling schedule. Fundamentally, this approach is a trade-off between energy savings and event of interest recall. Staying awake for a larger proportion of the time to collect sensor data is expected to improve recall, but reduce the amount of energy savings. Finding a balance between power savings and event of interest recall is not trivial as it not only depends on the specific application, but also on the user. Another drawback of this approach is that is does not scale well with multiple applications. It is possible for mutually unaware applications to implement conflicting wakeup schedules, resulting in little or no sleep.
+To avoid keeping the device awake for extended periods of time, a duty
+cycling approach can be used. In such an approach, the device is
+allowed to sleep for fixed, usually regular, periods of time. An
+application can implement duty cycling by scheduling an alarm using
+the system's alarm service and ensuring it does not have a wake lock
+acquired. The application is then notified by the operating system
+when the sleep period ends. At this time, the application can collect
+sensor readings for a period of time, then reschedule another alarm.
+This approach has a couple of apparent drawbacks. First off, events of
+interest will not be detected if they occur while the device is
+sleeping as the application does not receive any sensor data that
+would have been produced at those times. Secondly, the device might
+wake-up to discover that the event of interest is not actually
+occurring. This approach may be  improved in terms of event of
+interest recall by dynamically adjusting the length of time readings
+are collected for. If after a wake-up the application detects an event
+of interest, it can continue to collect sensor readings until events
+of interest are no longer being detected, at which time it can return
+to its regular duty cycling schedule. Fundamentally, this approach is
+a trade-off between energy savings and event of interest recall.
+Staying awake for a larger proportion of the time to collect sensor
+data is expected to improve recall, but reduce the amount of energy
+savings. Finding a balance between power savings and event of interest
+recall is not trivial as it not only depends on the specific
+application, but also on the user. Another drawback of this approach
+is that is does not scale well with multiple applications. It is
+possible for mutually unaware applications to implement conflicting
+wakeup schedules, resulting in little or no sleep.
 
-The newly released Google Nexus 5, running Android 4.4, introduces an extension to duty cycling referred to as sensor data batching. This approach requires hardware support and is currently not available on any devices other than the Nexus 5. In this approach, the device hardware can collect sensor readings while the main processor is sleeping. At wake-up, the entire batch of sensor data is delivered to the application(s) that registered a listener for that specific sensor. Batching has the great advantage that the applications receive all the sensor data, meaning that no events of interest will be missed. However, this comes at the cost of detection timeliness. Applications may detect events of interest many seconds after they actually occurred. Also, as with the duty cycling approach, the device may wake up to find out that no events of interest have occurred in the current batch.
+The newly released Google Nexus 5~\cite{nexus5}, running Android
+4.4~\cite{android4.4}, introduces an extension to duty cycling
+referred to as sensor data batching. This approach requires hardware
+support and is currently not available on any devices other than the
+Nexus 5. In this approach, the device hardware can collect sensor
+readings while the main processor is sleeping. At wake-up, the entire
+batch of sensor data is delivered to the application(s) that
+registered a listener for that specific sensor. Batching has the great
+advantage that the applications receive all the sensor data, meaning
+that no events of interest will be missed. However, this comes at the
+cost of detection timeliness.  Applications may detect events of
+interest many seconds after they actually occurred. Also, as with the
+duty cycling approach, the device may wake up to find out that no
+events of interest have occurred in the current batch.
 
-Multi-processor architectures allow computation offloading and wake-ups via interrupts. However, particular architectures may limit the degree of programmability of the peripheral processor. 
-
-In Refex\cite{reflex}, the authors show an architecture where the application developers can program their own sensor data analysis algorithms that are to be executed on the peripheral processor. Unfortunately, developers have to be exposed to the full complexity of the architecture, making application development more difficult. Even simple sensor-driven applications have to be re-factored into distributed programs. Additionally, it is unclear how the architecture can support multiple applications that necessitate data from the same sensor. The high level of programming complexity is very likely a cause why such an architecture is not supported by current commercial systems.
+Multi-processor heterogenous architectures allow computation
+offloading and wake-ups via interrupts. However, particular
+architectures may limit the degree of programmability of the
+peripheral processor.  In Refex\cite{reflex} and
+Turducken~\cite{turducken}, the authors show an architecture where the
+application developers can program their own sensor data analysis
+algorithms that are to be executed on the peripheral processor.
+Unfortunately, developers have to be exposed to the full complexity of
+the architecture, making application development more difficult. Even
+simple sensor-driven applications have to be re-factored into
+distributed programs. Additionally, it is unclear how the architecture
+can support multiple applications that necessitate data from the same
+sensor.  Moreover, this approach lacks portability, as differences in
+phone hardware require applications to be refactored. The high level of
+programming complexity is very likely a cause why such an architecture
+is not supported by current commercial systems.
 
 % it appears Reflex provides an API to get sensor data, so devs don't need to write code for each sensor version
 
-On the other side of the programming complexity spectrum, recent mobile devices limit computational offloading to a small, pre-defined set of activity detection algorithms. For example, the Motorola Moto X uses two low-power peripheral processors to wake-up the device when certain events occur. A dedicated natural language processor is used to wake-up the device when a user says the phrase "OK Google Now". Also, a contextual processor is used to turn on part of the screen when the device is taken out of a pocket or start the camera application when two twists of the wrist are detected. Additionally, Android 4.4 allows future devices (if they contain the appropriate sensors) to wakeup on specific trigger events such as "significant motion" or a step. However, the application developers have no control over the underlying algorithms or customization of parameters. Fundamentally, this approach provides callbacks for pre-defined activities such as walking or specific phrase recognition. This approach works great if the application developer is interested in one of the pre-defined activities. However, the approach provides no support for applications that are interested in activities that are not part of the pre-defined set. The main advantage of this approach is it ease of use from the point of view of application developers, provided that the platform supports the activities of interest. Also, very good energy savings are achieved as the device only wakes up when the event of interest occurs.
+On the other side of the programming complexity spectrum, recent
+mobile devices limit computational offloading to a small, pre-defined
+set of activity detection algorithms. For example, the Motorola Moto
+X~\cite{motox} uses two low-power peripheral processors to wake-up the
+device when certain events occur. A dedicated natural language
+processor is used to wake-up the device when a user says a
+pre-configured phrase, such as ``OK Google Now.''  Also, a contextual
+processor is used to turn on part of the screen when the device is
+taken out of a pocket or start the camera application when two twists
+of the wrist are detected.  Additionally, Android 4.4 allows future
+devices (if they contain the appropriate sensors) to wakeup on
+specific trigger events such as ``significant motion'' or a step.
+However, the application developers have no control over the
+underlying algorithms or customization of parameters.  Fundamentally,
+this approach provides callbacks for pre-defined activities such as
+walking or specific phrase recognition.  This approach provides a
+simple programming interface and achieves high energy savings for
+applications that are interested in one of the pre-defined activities.
+However, the approach provides no support for applications that are
+interested in activities that are not part of the pre-defined set.
+
