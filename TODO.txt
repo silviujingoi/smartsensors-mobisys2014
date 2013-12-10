@@ -1,0 +1,15 @@
+Fix Bugs:
+- awake time for batching
+- double counting energy for transitions
+- update tables and graphs
+
+New:
+- Oracle wakeup condition
+- Macrobenchmarks
+- Related works
+- Discussion about other sensors
+
+Changes:
+- better simulator description for each approach
+- improved architecture diagram
+- rename groups
