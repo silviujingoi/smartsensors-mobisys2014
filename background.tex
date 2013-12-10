@@ -62,14 +62,17 @@ up to find out that no events of interest have occurred in the current batch.
 
 \subsection{Computation Offloading}
 
-Generalizing batching, a peripheral processor can be used to collect and
-\emph{compute} on sensor data while the main processor is asleep. The Reflex
-system~\cite{reflex} allows developers to offload their own sensor data analysis
-algorithms to the peripheral processor. However, developers are exposed to the
-full complexity of the architecture, making application development more
-difficult. Even simple sensor-driven applications have to be refactored into
-distributed programs. Additionally, it is unclear how multiple applications can
-program or use the same sensor.
+Generalizing batching, a peripheral processor can be used to collect
+and \emph{compute} on sensor data while the main processor is
+asleep~\cite{reflex,turducken}.  This approach allows developers to
+offload their own sensor data analysis algorithms to the peripheral
+processor. However, developers are exposed to the full complexity of
+the architecture, making application development more difficult. Even
+simple sensor-driven applications have to be refactored into
+distributed programs, and multiple versions may be required to handle
+variotions between the hardware available on different phones.
+Additionally, it is unclear how multiple applications can program or
+use the same sensor.
 
 %% The high level of programming complexity is very likely a cause why such an
 %% architecture is not supported by current commercial systems.
