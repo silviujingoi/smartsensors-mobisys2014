@@ -16,7 +16,7 @@ Unfortunately, most mobile platforms are a poor match for a growing
 class of mobile applications that perform continuous background
 sensing.  Examples range from context-aware applications, such as
 targeted advertising, and medical applications that improve our
-wellbeing or even save lives using activity recognition (e.g., fall
+well-being or even save lives using activity recognition (e.g., fall
 detection), to applications that use participatory sensing to get a
 better understanding of the physical world, such as pollution
 monitoring or traffic prediction.  While the processing demands of
@@ -42,7 +42,7 @@ applications, have recently incorporated low-power processors into
 their architectures, but have limited application developers to APIs
 that provide fixed functionality, by either batching sensor readings
 or recognizing a small number of predefined activities that can be
-used as {\em wake up} conditions~\cite{android4.4,motox,nexus5}.
+used as wake up conditions~\cite{android4.4,motox,nexus5}.
 
 In this paper we argue that these APIs are insufficient for supporting
 a rich and flexible set of continuous monitoring applications.
@@ -51,19 +51,26 @@ events and is not appropriate for applications that require crisp
 response time.  An activity recognition API provides little
 flexibility with no support for applications interested in events that
 are not covered by the set of predefined activities.  Instead, we
-argue that the API should expose access to filter-level functionality,
-enabling programmers to chose among a set of predefined filters that
-implement commonly used algorithms (e.g., FFT, exponential average)
-with parameters that can be configured by the developer to meet
-application requirements.  By providing access to lower-level filters,
-as opposed to higher-level activity detectors, our approach provides a
-better balance between flexibility and ease of deployment.  By letting
-the developer select and configure the filtering algorithm used by the
-low-power hardware, our approach enables developers to design a broad
-set of wake up conditions that can be used to detect a wide range of
-activities.  This functionality could be leveraged by user-level
-activity recognition libraries that could then provide simple wake up
-conditions for a large number of activities.
+argue that the API should expose access to filter-level functionality.
+We present {\em Smart Sensors}, an approach that enables programmers
+to create custom wake up conditions by choosing among a set of
+predefined filtering algorithms and tuning their parameters.  By
+providing developer with access to lower-level filters that implement
+commonly used algorithms (e.g., FFT, exponential average), as opposed
+to higher-level activity detectors, smart sensors provide a better
+balance between flexibility and ease of deployment.  Smart sensor let
+developers create a broad set of wake up conditions that can be used
+to detect a wide range of activities.  Simultaneously, they are
+significantly easier to program compared to fully programmable
+offloading.  Moreover, since the filters are pre-specified, their
+implementations can be optimized for each low-power processor,
+improving application portability between devices.  Furthermore, it is
+possible to combine the filtering and wake up operations when
+applications register interest in the same set of events.  While smart
+sensors could be programmed directly by individual applications, it is
+easy to imagine user-level activity recognition libraries that
+encapsulate the functionality of the smart sensor to provide simple
+wake up conditions for a large number of activities.
 
 To evaluate the benefits of our approach, we have developed a prototype
 implementation that extends a Nexus 4 phone with a low-power sensor
