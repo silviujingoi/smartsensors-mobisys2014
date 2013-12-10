@@ -82,21 +82,23 @@ use the same sensor.
 
 \subsection{Activity Detection}
 
-Given the challenges with full computation offloading, recent mobile devices
-limit offloading to a small, predefined set of \emph{activity detection}
-algorithms. For example, the Motorola Moto X uses two low-power peripheral
-processors to wake-up the device when certain events occur. A dedicated natural
-language processor is used to wake up the device when a user says the phrase "OK
-Google Now". Also, a contextual processor is used to turn on a part of the
-screen when the mobile device is taken out of a pocket, or start the camera
-application when the processor detects two wrist twists. Additionally, the
-latest Android 4.4 supports specific wake up events based on detecting
-"significant motion" or a step, if a device has appropriate sensors. However,
-the application developer has no control over the underlying activity detection
-algorithms, including customization of parameters. This approach is easy to use,
-and it provides good energy savings because the device only wakes up when the
-event of interest occurs. However, it only works for applications that can take
-advantage of the predefined set of activities.
+Given the challenges with full computation offloading, recent mobile
+devices limit offloading to a small, predefined set of \emph{activity
+  detection} algorithms. For example, the Motorola Moto X~\cite{motox}
+uses two low-power peripheral processors to wake-up the device when
+certain events occur. A dedicated natural language processor is used
+to wake up the device when a user says the phrase "OK Google Now".
+Also, a contextual processor is used to turn on a part of the screen
+when the mobile device is taken out of a pocket, or start the camera
+application when the processor detects two wrist twists. Additionally,
+the latest Android 4.4~\cite{android4.4} supports specific wake up
+events based on detecting "significant motion" or a step, if a device
+has appropriate sensors. However, the application developer has no
+control over the underlying activity detection algorithms, including
+customization of parameters. This approach is easy to use, and it
+provides good energy savings because the device only wakes up when the
+event of interest occurs. However, it only works for applications that
+can take advantage of the predefined set of activities.
 
 %% The main advantage of this approach is it ease of use application developers,
 %% provided that the platform supports the activities of interest. Also, very
