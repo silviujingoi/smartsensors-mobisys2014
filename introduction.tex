@@ -14,18 +14,21 @@ such interactive usage.
 
 Unfortunately, most mobile platforms are a poor match for a growing
 class of mobile applications that perform continuous background
-sensing.  Examples range from medical and health monitoring
-applications, such as pedometers and fall detectors, to participatory
-sensing applications, such as pollution and traffic monitoring.  While
-the processing demands of these applications are modest most of the
-time, they require periodic collection of sensor readings, which
-prevents the device from going to sleep for extended periods of time.
-As a result, applications that perform continuous sensing may cause
-the device's battery to drain within several hours.
+sensing.  Examples range from context-aware applications, such as
+targeted advertising, and medical applications that improve our
+wellbeing or even save lives using activity recognition (e.g., fall
+detection), to applications that use participatory sensing to get a
+better understanding of the physical world, such as pollution
+monitoring or traffic prediction.  While the processing demands of
+these applications are modest most of the time, they require periodic
+collection of sensor readings, which prevents the device from going to
+sleep for extended periods of time.  As a result, applications that
+perform continuous sensing may cause the device's battery to drain
+within several hours.
 
 To improve support for continuous sensing applications the research
 community has proposed the use of fully programmable heterogeneous
-architectures~\cite{reflex}.  In these approaches, developers
+architectures~\cite{reflex,turducken}.  In these approaches, developers
 partition their applications to offload the initial filtering stages
 of the application to a low-power processor (or a hierarchy of
 processors).  When the code running on the low power processor detects
