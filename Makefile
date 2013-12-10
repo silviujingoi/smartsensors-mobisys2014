@@ -6,7 +6,9 @@ SOURCE = mobisys.tex \
      approach.tex \
 	 evaluation.tex \
  	 conclusion.tex \
-	 mobisys.bib
+	 mobisys.bib \
+	 abstract.tex
+
 
 
 $(TARGET): $(SOURCE)

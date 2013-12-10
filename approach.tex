@@ -1,59 +1,79 @@
 
 \begin{figure}[p]
-	\includegraphics[width=9cm]{android_architecture_current.png}
-	\caption{Simplified architecture of Android 4.4 sensor system}
-    \label{fig:androidArchCurrent}
-\end{figure}
-
-\begin{figure}[p]
 	\includegraphics[width=9cm]{android_architecture_proposed.png}
-	\caption{Proposed architecture based on Android 4.4 sensor system}
-    \label{fig:androidArchProposed}
+	\caption{Smart sensor architecture}
+    \label{fig:smartarchitecture}
 \end{figure}
 
 
-\section{Approach}
+\section{Smart Sensors}
 \label{sec:approach}
 
-Our aim is to enable low-power, continuous sensing tasks on mobile processors.
-As described earlier, the current approaches for low power sensing trade ease of
-programming with the generality of the approach. On the one hand, fully
-programmable offloading of code to low-power processors allows developing
-arbitrary applications [TODO:cite]. However, it raises several challenges, such as
-requiring a split or complete redevelopment of application functionality, and
-carefully choosing the code that can be offloaded so that it can run in real
-time. The latter is complicated because it depends on the type and functionality
-of the low-power processor that is available. Furthermore, since each
-application is written independently, this approach makes it hard to optimize
-power consumption for multiple sensing applications. Alternatively, the phone
-can be designed to support a predefined set of activities but this approach
-limits the number and types of applications that can be supported.
+Our aim is to enable low-power, continuous sensing tasks on mobile
+processors.  As described earlier, the current approaches for low
+power sensing trade ease of programming with the generality of the
+approach. On the one hand, fully programmable offloading of code to
+low-power processors allows developing arbitrary
+applications~\cite{reflex,turducken}. However, it raises several
+challenges, such as requiring a split or complete redevelopment of
+application functionality, and carefully choosing the code that can be
+offloaded so that it can run in real time. The latter is complicated
+because it depends on the type and functionality of the low-power
+processor that is available.  Furthermore, since each application is
+written independently, this approach makes it hard to optimize power
+consumption for multiple sensing applications. Alternatively, the
+phone can be designed to support a predefined set of activities but
+this approach limits the number and types of applications that can be
+supported.
 
-Our approach for low-power sensing takes a middle ground and provides a
-filter-based sensor API for application programs. Applications choose from a
-pre-specified set of event filters that are run by the low-power processor to
-detect application-specific events of interest. When these events occur, the
-main processor is woken up and the application code is invoked. The result is
-that applications view the sensors as ``smart'' sensors that generate relevant
-events only. This approach enables supporting a large number of sensing
-applications while being significantly easier to program compared to fully
-programmable offloading, as we show later. Since the filters are pre-specified,
-their implementations can be optimized for each low-power
-processor. Furthermore, it is possible to combine the filtering and wake up
-operations when applications register interest in the same set of events.
+Our approach for low-power sensing takes a middle ground and provides
+a filter-based sensor API for application programs. Applications
+create {\em custom wake up conditions} for events of interest by
+choosing from a pre-specified set of filtering algorithms and tunning
+their parameters.  When these events occur, the main processor is
+woken up and the application code is invoked. The result is that
+applications view the sensors as ``smart'' sensors that generate
+relevant events only. This approach enables supporting a large number
+of sensing applications while being significantly easier to program
+compared to fully programmable offloading, as we show later. Since the
+filters are pre-specified, their implementations can be optimized for
+each low-power processor. Furthermore, it is possible to optimize the
+operation of multiple applications that have filters in common.
 
-The main challenge with our smart sensors approach is defining the appropriate
-set of event filters for each sensor. First, the filters need to be mainly
-computational tasks. Any code that needs to use resources not available to the
-low-powered processor, e.g., the graphical user interface, needs to run on the
-main processor. Second, there is a trade-off in the computational tasks that are
-carried out by the low-power processor. Pushing additional computation to the
-low-power processor will generally result in higher accuracy filters, and the
-main processor will remain asleep for longer periods of time, thus increasing
-energy savings. However, this computation needs to be performed on the low-power
-processor in real time, and the main processor woken as soon as the event is
-detected. We evaluate this trade-off between filter accuracy and power savings
-by comparing the behavior of two different low-power processors.
+Figure~\ref{fig:smartarchitecture} shows the logical architecture of a
+system that implements the smart sensors abstraction.  Applications
+interact with a sensor manager and define custom wake up conditions by
+choosing among the avialable pre-defined filters.  The figure also
+shows the that architecture supports recognition libraries that
+encapsulate the functionality of the smart sensor to provide simple
+wake up conditions for a large number of activities.  To keep the
+complexity of filters low, our initial implementation limits filters
+to operations on data collected from a single sensor.  Applications
+that perform sensor fusion, are impemented by defining separate
+indepedent wake up conditions on multiple sensors, and merging data on
+the main processor.
+
+
+
+
+
+The main challenge with our smart sensors approach is defining the
+appropriate set of event filters for each sensor. First, the filters
+need to be mainly computational tasks. Any code that needs to use
+resources not available to the low-powered processor, e.g., the
+graphical user interface, needs to run on the main processor. Second,
+there is a trade-off in the computational tasks that are carried out
+by the low-power processor. Pushing additional computation to the
+low-power processor will generally result in higher accuracy filters,
+and the main processor will remain asleep for longer periods of time,
+thus increasing energy savings. However, this computation needs to be
+performed on the low-power processor in real time, and the main
+processor woken as soon as the event is detected. We evaluate this
+trade-off between filter accuracy and power savings by comparing the
+behavior of two different low-power processors.
+
+
+
 
 We examine the types of computation performed by various sensing applications to
 determine a common set of filters that are needed for these applications. In our
