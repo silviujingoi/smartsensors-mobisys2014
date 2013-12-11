@@ -62,16 +62,21 @@ up to find out that no events of interest have occurred in the current batch.
 
 \subsection{Computation Offloading}
 
-Generalizing batching, a peripheral processor can be used to collect
-and \emph{compute} on sensor data while the main processor is
+Generalizing batching, a low-power peripheral processor can be used to
+collect and \emph{compute} on sensor data while the main processor is
 asleep~\cite{reflex,turducken}.  This approach allows developers to
 offload their own sensor data analysis algorithms to the peripheral
-processor. However, developers are exposed to the full complexity of
-the architecture, making application development more difficult. Even
-simple sensor-driven applications have to be refactored into
-distributed programs, and multiple versions may be required to handle
-variotions between the hardware available on different phones.
-Additionally, it is unclear how multiple applications can program or
+processor, enabling arbitrary sensing applications. However,
+developers are exposed to the full complexity of the architecture,
+making application development more difficult. Even simple
+sensor-driven applications have to be refactored into distributed
+programs, and the code that that is offloaded has to be chosen
+carefully so that it can run in real time. The latter is complicated
+because it depends on the type and functionality of the peripheral
+processor that is available. As a result, multiple versions of the
+application may be required to handle hardware variations across
+phones. Furthermore, since each application is written independently,
+this approach makes it hard for multiple applications to program or
 use the same sensor.
 
 %% The high level of programming complexity is very likely a cause why such an
@@ -98,7 +103,8 @@ control over the underlying activity detection algorithms, including
 customization of parameters. This approach is easy to use, and it
 provides good energy savings because the device only wakes up when the
 event of interest occurs. However, it only works for applications that
-can take advantage of the predefined set of activities.
+can take advantage of the predefined set of activities, limiting the
+number and types of applications that can be supported.
 
 %% The main advantage of this approach is it ease of use application developers,
 %% provided that the platform supports the activities of interest. Also, very

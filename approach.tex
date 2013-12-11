@@ -10,21 +10,9 @@
 \label{sec:approach}
 
 Our aim is to enable low-power, continuous sensing tasks on mobile
-processors.  As described earlier, the current approaches for low
-power sensing trade ease of programming with the generality of the
-approach. On the one hand, fully programmable offloading of code to
-low-power processors allows developing arbitrary
-applications~\cite{reflex,turducken}. However, it raises several
-challenges, such as requiring a split or complete redevelopment of
-application functionality, and carefully choosing the code that can be
-offloaded so that it can run in real time. The latter is complicated
-because it depends on the type and functionality of the low-power
-processor that is available.  Furthermore, since each application is
-written independently, this approach makes it hard to optimize power
-consumption for multiple sensing applications. Alternatively, the
-phone can be designed to support a predefined set of activities but
-this approach limits the number and types of applications that can be
-supported.
+processors.  As described earlier, the most effective approaches for
+low-power sensing, full computation offloading and activity detection,
+either complicate programming or have limited generality.
 
 Our approach for low-power sensing takes a middle ground and provides
 a filter-based sensor API for application programs. Applications
