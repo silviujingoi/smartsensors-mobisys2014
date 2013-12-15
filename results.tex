@@ -153,22 +153,34 @@ used in the filter?
 \fi
 
 \begin{table*}[t]
-    \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+    \begin{tabular}{|l|l|l|l|l|l|l|}
     \hline
-    \multirow{4}{*}{~} & \multirow{4}{*}{\parbox{2.2cm}{Sleep Interval (seconds)}} & \multirow{4}{*}{\parbox{1.2cm}{Power (mW)}} &\multicolumn{6}{c|}{Recall} \\ \cline{4-9}
-                &  &  & \multicolumn{3}{c|}{Group 1} & \multicolumn{3}{c|}{Group 3}  \\ \cline{4-9}
-                &  &  & Walking & Headbutt & Transitions & Walking & Headbutt & Transitions \\ \hline
-    Always On    & ~              & 323        & 98\%    & 100\%    & 100\%       & 97\%    & 100\%    & 100\%       \\ \hline
-    \multirow{4}{*}{Duty Cycling}
-		& 2              & 344        & 55\%    & 29\%     & 90\%        & 55\%    & 66\%     & 93\%        \\ \cline{2-9}
-		& 5              & 212        & 33\%    & 57\%     & 56\%        & 32\%    & 40\%     & 55\%        \\ \cline{2-9}
-		& 10             & 131        & 20\%    & 14\%     & 29\%        & 20\%    & 40\%     & 33\%        \\ \cline{2-9}
-		& 20             & 77.9       & 11\%    & 36\%     & 15\%        & 11\%    & 12\%     & 19\%        \\ \hline
-    \multirow{4}{*}{Batching}
-		& 2              & 677        & 98\%    & 100\%    & 100\%       & 97\%    & 100\%    & 100\%       \\ \cline{2-9}
-		& 5              & 328        & 98\%    & 100\%    & 100\%       & 97\%    & 100\%    & 100\%       \\ \cline{2-9}
-		& 10             & 220        & 98\%    & 100\%    & 100\%       & 97\%    & 100\%    & 100\%       \\ \cline{2-9}
-		& 20             & 181        & 98\%    & 100\%    & 100\%       & 97\%    & 100\%    & 100\%       \\ \hline
+	\multirow{2}{*}{~}			& \multirow{2}{*}{Approach}		& \multirow{2}{*}{\parbox{2.2cm}{Sleep Interval (seconds)}}	
+																			& \multirow{2}{*}{\parbox{1.2cm}{Power (mW)}} 
+																						& \multicolumn{3}{c|}{Recall} 													\\ \cline{5-7}
+								&								&			&			& Walking				& Headbutt					& Transitions 				\\ \hline
+	\multirow{11}{*}{Group 1}	& \multicolumn{2}{l|}{Always Awake}			& 323		& \multirow{6}{*}{98\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-4}
+								& \multirow{5}{*}{Batching}		& 2			& 84.0		&						&							&							\\ \cline{3-4}
+								& 								& 5			& 60.5		&						&							&							\\ \cline{3-4}
+								& 								& 10		& 52.6		&						&							&							\\ \cline{3-4}
+								& 								& 20		& 48.7		&						&							&							\\ \cline{3-4}
+								& 								& 30		& 47.5		&						&							&							\\ \cline{2-7}
+								& \multirow{5}{*}{Duty Cycling}	& 2			& 212		& 94\%					& 57\%						& 100\%						\\ \cline{3-7}
+								& 								& 5			& 140		& 82\%					& 14\%						& 35\%						\\ \cline{3-7}
+								& 								& 10		& 92.1		& 63\%					& 29\%						& 23\%						\\ \cline{3-7}
+								& 								& 20		& 59.4		& 48\%					& 14\%						& 10\%						\\ \cline{3-7}
+								& 								& 30		& 44.2		& 31\%					& 7\%						& 4\%						\\ \hline
+	\multirow{11}{*}{Group 3}	& \multicolumn{2}{l|}{Always Awake}			& 323		& \multirow{6}{*}{97\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-4}
+								& \multirow{5}{*}{Batching}		& 2			& 84.0		&						&							&							\\ \cline{3-4}
+								& 								& 5			& 60.5		&						&							&							\\ \cline{3-4}
+								& 								& 10		& 52.6		&						&							&							\\ \cline{3-4}
+								& 								& 20		& 48.7		&						&							&							\\ \cline{3-4}
+								& 								& 30		& 47.5		&						&							&							\\ \cline{2-7}
+								& \multirow{5}{*}{Duty Cycling}	& 2			& 261		& 89\%					& 47\%						& 90\%						\\ \cline{3-7}
+								& 								& 5			& 209		& 76\%					& 28\%						& 39\%						\\ \cline{3-7}
+								& 								& 10		& 166		& 64\%					& 27\%						& 8\%						\\ \cline{3-7}
+								& 								& 20		& 112		& 42\%					& 19\%						& 7\%						\\ \cline{3-7}
+								& 								& 30		& 82.7		& 30\%					& 9\%						& 5\%						\\ \hline
     \end{tabular}
 	\caption{Summary of achieved recall and power consumption for the Always On, Duty Cycling and Batching approaches}
 	\label{table:summaryAA-DC-BATCHING}
@@ -178,12 +190,12 @@ used in the filter?
     \begin{tabular}{|l|l|l|l|}
 	\hline
     ~       					& Action      & Power (mW) & Recall \\ \hline
-    \multirow{3}{*}{Group 1} 	& Walking     & 48.5       & 98\%   \\ \cline{2-4}
-								& Headbutts   & 48.2       & 100\%  \\ \cline{2-4}
-								& Transitions & 18.7       & 100\%  \\ \hline
-    \multirow{3}{*}{Group 3} 	& Walking     & 322        & 97\%   \\ \cline{2-4}
-								& Headbutts   & 65.8       & 100\%  \\ \cline{2-4}
-								& Transitions & 52.4       & 100\%  \\ \hline
+    \multirow{3}{*}{Group 1} 	& Walking     & 42.2       & 98\%   \\ \cline{2-4}
+								& Headbutts   & 42.2       & 100\%  \\ \cline{2-4}
+								& Transitions & 15.6       & 100\%  \\ \hline
+    \multirow{3}{*}{Group 3} 	& Walking     & 267        & 97\%   \\ \cline{2-4}
+								& Headbutts   & 62.7       & 100\%  \\ \cline{2-4}
+								& Transitions & 31.1       & 100\%  \\ \hline
     \end{tabular}
 	\caption{Summary of achieved recall and power consumption for the Wake-up Conditions approach}
 	\label{table:summaryWUC}
@@ -205,16 +217,16 @@ The wake-up conditions approach has the lowest power consumption in every scenar
     \begin{tabular}{|l|l|l|l|l|l|l|l|}
     \hline
     \multirow{2}{*}{ Wake-up condition used}
-							& \multirow{2}{*}{~} & \multicolumn{3}{c|}{Headbutts} & \multicolumn{3}{c|}{Transitions} \\ \cline{2-8}
-							&       & Group 1 & Group 2   & Group 3 & Group 1 & Group 2     & Group 3 \\ \hline
+							& \multirow{2}{*}{~}	& \multicolumn{3}{c|}{Headbutts} 	& \multicolumn{3}{c|}{Transitions} 	\\ \cline{2-8}
+							&						& Group 1 	& Group 2	& Group 3 	& Group 1 	& Group 2	& Group 3 	\\ \hline
     \multirow{2}{*}{Best for step detection}
-							& Recall & 35.7\%  & 49.5\%    & 48.3\%  & 87.5\%  & 70.9\%      & 77.5\%  \\ \cline{2-8}
-							& Power  & 48.5    & 186       & 322     & 48.5    & 186         & 322     \\ \hline
+							& Recall 				& 35.7\%  	& 62.7\%    & 69.3\%  	& 87.5\% 	& 76.4\%	& 78.3\%  	\\ \cline{2-8}
+							& Power  				& 42.2 		& 154       & 267     	& 42.2 		& 154		& 267     	\\ \hline
     \multirow{2}{*}{Best custom}
-							& Recall & 100\%   & 100\%     & 100\%   & 100\%   & 100\%       & 100\%   \\ \cline{2-8}
-							& Power  & 48.2    & 65.2      & 65.8    & 18.7    & 48.3        & 52.4    \\ \hline
+							& Recall 				& 100\%   	& 100\%     & 100\%   	& 100\%   	& 100\%		& 100\%   	\\ \cline{2-8}
+							& Power  				& 42.2   	& 62.4      & 62.7    	& 15.7    	& 27.2		& 31.1    	\\ \hline
     \end{tabular}
-	\caption{Detection recall and power consumption for the Headbutts and Transitions action using fixed or custom wake-up conditions}
+	\caption{Detection recall and power consumption for the Headbutts and Transitions actions using fixed or custom wake-up conditions}
 	\label{table:predifinedActionVsPredefinedFilter}
 \end{table*}
 
@@ -240,7 +252,7 @@ We conclude that the best filter and threshold combinations are not dependent on
 \subsection{Threshold Sensitivity}
 
 \begin{figure}[h]
-	\includegraphics[width=8.5cm]{wuc_step_th_group2.png}
+	\includegraphics[width=8.5cm]{wuc_step_th_group3.png}
 	\caption{}
     \label{fig:wucStepThRecallPowerGroup2}
 \end{figure}
