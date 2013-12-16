@@ -201,6 +201,24 @@ used in the filter?
 	\label{table:summaryWUC}
 \end{table}
 
+\begin{table}[t]
+    \begin{tabular}{|l|l|l|l|}
+	\hline
+    ~       					& Action      & Power (mW) & Recall \\ \hline
+    \multirow{3}{*}{Group 1} 	& Walking     & 37.7       & 98\%   \\ \cline{2-4}
+								& Headbutts   & 14.1       & 100\%  \\ \cline{2-4}
+								& Transitions & 14.9       & 100\%  \\ \hline
+	\multirow{3}{*}{Group 2} 	& Walking     & 134        & 99\%   \\ \cline{2-4}
+								& Headbutts   & 19.2       & 100\%  \\ \cline{2-4}
+								& Transitions & 21.8       & 100\%  \\ \hline
+    \multirow{3}{*}{Group 3} 	& Walking     & 240        & 97\%   \\ \cline{2-4}
+								& Headbutts   & 19.7       & 100\%  \\ \cline{2-4}
+								& Transitions & 24.6       & 100\%  \\ \hline
+    \end{tabular}
+	\caption{Recall and power consumption for a perfect Wake-up Condition (Oracle)}
+	\label{table:WUCoracle}
+\end{table}
+
 This section answers the first three questions. Table \ref{table:summaryAA-DC-BATCHING} summarizes the power and event of interest recall data for the always on scenario and for various wake-up intervals for the duty cycling and batching approaches. Similarly, Table \ref{table:summaryWUC} summarizes the results for the approach that uses wake-up conditions. The information in this figure represents the best wake-up conditions in terms of power consumption that achieved the same recall as the always on scenario.
 
 We note the following:
