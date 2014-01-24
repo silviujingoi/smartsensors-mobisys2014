@@ -120,14 +120,14 @@ Section 6 -- Results
 
 The evaluation answers the following questions:
 
-1) Are there applications/usage scenarions that are supported
+1) Are there applications/usage scenarios that are supported
 efficiently with duty cycling.  What are the power saving achieved by
 this approach?
 
 2) What are the power savings achievable with batching + duty cycling.
 
-3) Under what condifitions having a wakeup condition improves
-performace(over the previous approaches), and by how much?
+3) Under what conditions having a wakeup condition improves
+performance(over the previous approaches), and by how much?
 
 4) What is the benefits of having different wake up conditions
 (filters)?  Do different apps require different wake up conditions,

@@ -1,7 +1,7 @@
 
-\begin{figure}[p]
-	\includegraphics[width=9cm]{android_architecture_proposed.png}
-	\caption{Smart sensor architecture}
+\begin{figure}[t]
+	\includegraphics[width=9cm]{android_smartsensor_architecture_proposed.png}
+	\caption{Proposed system architecture using Smart Sensors}
     \label{fig:smartarchitecture}
 \end{figure}
 
@@ -26,19 +26,19 @@ of sensing applications while being significantly easier to program
 compared to fully programmable offloading, as we show later. Since the
 filters are pre-specified, their implementations can be optimized for
 each low-power processor. Furthermore, it is possible to optimize the
-operation of multiple applications that have filters in common.
+operation of multiple applications that use common filters.
 
-Figure~\ref{fig:smartarchitecture} shows the logical architecture of a
+Figure~\ref{fig:smartarchitecture} shows the architecture of a
 system that implements the smart sensors abstraction.  Applications
 interact with a sensor manager and define custom wake up conditions by
-choosing among the avialable pre-defined filters.  The figure also
-shows the that architecture supports recognition libraries that
+choosing among the available pre-defined filters.  The figure also
+shows that the architecture supports recognition libraries that
 encapsulate the functionality of the smart sensor to provide simple
 wake up conditions for a large number of activities.  To keep the
 complexity of filters low, our initial implementation limits filters
 to operations on data collected from a single sensor.  Applications
-that perform sensor fusion, are impemented by defining separate
-indepedent wake up conditions on multiple sensors, and merging data on
+that perform sensor fusion, are implemented by defining separate
+independent wake up conditions on multiple sensors, and merging data on
 the main processor.
 
 
@@ -51,14 +51,15 @@ need to be mainly computational tasks. Any code that needs to use
 resources not available to the low-powered processor, e.g., the
 graphical user interface, needs to run on the main processor. Second,
 there is a trade-off in the computational tasks that are carried out
-by the low-power processor. Pushing additional computation to the
-low-power processor will generally result in higher accuracy filters,
+by the low-power processor. Pushing additional, more complex computation to the
+low-power processor has the potential to result in higher accuracy filters,
 and the main processor will remain asleep for longer periods of time,
-thus increasing energy savings. However, this computation needs to be
-performed on the low-power processor in real time, and the main
-processor woken as soon as the event is detected. We evaluate this
-trade-off between filter accuracy and power savings by comparing the
-behavior of two different low-power processors.
+thus increasing energy savings. However, sensor data processing needs to be
+performed in real time, and the main processor woken as soon as the event 
+is detected. Pushing too much computation to the low-power processor can overwhelm it.
+We evaluate this trade-off between filter accuracy and power savings by comparing the
+behaviour of two low-power processors with different power profiles and 
+computational resources.
 
 
 
@@ -68,11 +69,12 @@ determine a common set of filters that are needed for these applications. In our
 experience, while the application logic varies widely, their sensor event
 detection algorithms are relatively simple and have commonalities. For example,
 an accelerometer-based fall detector looks for acceleration that represents
-free-fall, followed by a spike in acceleration~[TODO:cite]. Similarly, a step
+free-fall, followed by a spike in acceleration~\cite{kangasFallDetection}. Similarly, a step
 detection algorithm looks for a local maxima within a certain range of
-acceleration~[TODO:cite]. 
+acceleration~\cite{libbyFootstepDetection}. 
 
-These applications often perform some common initial steps. For example, several
+These applications often perform some common initial steps after obtaining sensor 
+readings. For example, several
 accelerometer-based applications initially check whether the acceleration
 magnitude exceeds a certain threshold in order to determine if there is any
 movement. Also, the acceleration data has significant noise, and hence many

@@ -6,7 +6,7 @@ Mobile application developers can choose among several existing approaches when
 attempting to perform continuous sensing. The availability of some of these
 approaches depends on the mobile device's hardware and operating system.
 
-\subsection{Always On}
+\subsection{Always Awake}
 
 The basic approach for continuous sensing is to keep the mobile device
 \emph{always on}. As an example, on the Android operating system, the sensing
@@ -15,14 +15,14 @@ registers a listener for a specific sensor. Whenever the sensor produces a new
 reading, the operating system passes the reading to the application via a
 callback function. This operation continues until the listener is unregistered
 or until the wake lock is released. The benefit of this approach is that it
-achieves the highest accuracy because all the sensor data is delivered to the
+achieves the highest possible accuracy because all the sensor data is delivered to the
 application. However, the device cannot be powered down and hence the power
 consumption of this approach is high.
 
 \subsection{Duty Cycling}
 
-To avoid keeping the device awake for extended periods of time, \emph{duty
-  cycling} allows a device to sleep for fixed, usually regular, periods of
+To avoid keeping the device awake for extended periods of time, \emph{duty 
+cycling} allows a device to sleep for fixed, usually regular, periods of
 time. An application on Android can implement duty cycling by scheduling a wake
 up alarm using the system's alarm service and by ensuring that it has not
 acquired a wake lock. When no application has a wake lock, the operating system
@@ -30,18 +30,20 @@ can power down the processor. When the wake up alarm fires, the processor wakes
 up and notifies the application. Next, the application collects sensor readings
 for a short period of time, and then reschedules another alarm.
 
-Duty cycling has several drawbacks. First, events of interest will not be
-detected if they occur while the device is sleeping because the application does
-not receive any sensor data that were produced at those times. Second, events of
-interest may not occur during the short time that the device is awake. These
-power transitions are wasteful and expensive (as we show later). The basic duty
+Duty cycling has several drawbacks. While the device is sleeping, events of interest will not be 
+detected because the application does not receive any sensor data that were produced at those 
+times. Additionally, during the short time periods when the device is awake and collecting 
+sensor readings, the events of interest might not occur. These power transitions are wasteful 
+and expensive (as we show later). 
+
+The basic duty
 cycling approach can be improved by dynamically adjusting the wake up time. When
 an application is woken up and detects an event of interest, it continues to
 collect sensor readings until events do not occur for some period, after which
 it returns to its regular duty cycling schedule. This improves detection
 accuracy (e.g., event recall) but at the expense of increased energy
 consumption. Unfortunately, finding a good balance between accuracy and power
-savings depends on the specific application and the user's behavior. Another
+savings depends on the specific application and the user's behaviour. Another
 drawback of this approach is that is does not scale well with multiple
 applications. It is possible for mutually unaware applications to implement
 conflicting wakeup schedules, resulting in little or no sleep.
@@ -54,23 +56,25 @@ asleep. Upon wake up, the entire batch of sensor data is delivered to the
 application(s) that registered a listener for that specific sensor. Unlike duty
 cycling, batching requires hardware support (e.g., it is currently only
 available on the newly released Google Nexus 5, running Android 4.4), but it
-enables applications to receive all the sensor data, and hence provides detect
-accuracy similar to the power-on approach. However, batching affects detection
+enables applications to receive all the sensor data, and hence provides detection
+accuracy similar to the Always Awake approach. However, batching affects detection
 timeliness. Applications may detect events of interest many seconds after they
 actually occurred. Also, as with the duty cycling approach, the device may wake
-up to find out that no events of interest have occurred in the current batch.
+up to find out that no events of interest have occurred in the current batch, which 
+is wasteful.
 
 \subsection{Computation Offloading}
+\label{subsec:computationOffloading}
 
 Generalizing batching, a low-power peripheral processor can be used to
 collect and \emph{compute} on sensor data while the main processor is
 asleep~\cite{reflex,turducken}.  This approach allows developers to
 offload their own sensor data analysis algorithms to the peripheral
-processor, enabling arbitrary sensing applications. However,
+processor, enabling arbitrarily rich sensing applications. However,
 developers are exposed to the full complexity of the architecture,
 making application development more difficult. Even simple
 sensor-driven applications have to be refactored into distributed
-programs, and the code that that is offloaded has to be chosen
+programs, and the code that is offloaded has to be chosen
 carefully so that it can run in real time. The latter is complicated
 because it depends on the type and functionality of the peripheral
 processor that is available. As a result, multiple versions of the
@@ -92,12 +96,12 @@ devices limit offloading to a small, predefined set of \emph{activity
   detection} algorithms. For example, the Motorola Moto X~\cite{motox}
 uses two low-power peripheral processors to wake-up the device when
 certain events occur. A dedicated natural language processor is used
-to wake up the device when a user says the phrase "OK Google Now".
+to wake up the device when a user says the phrase ``OK Google Now''.
 Also, a contextual processor is used to turn on a part of the screen
 when the mobile device is taken out of a pocket, or start the camera
 application when the processor detects two wrist twists. Additionally,
 the latest Android 4.4~\cite{android4.4} supports specific wake up
-events based on detecting "significant motion" or a step, if a device
+events based on detecting ``significant motion'' or a step, if a device
 has appropriate sensors. However, the application developer has no
 control over the underlying activity detection algorithms, including
 customization of parameters. This approach is easy to use, and it

@@ -1,13 +1,26 @@
 \section{Experimental Setup}
 \label{sec:experimentalSetup}
 
-Our evaluation compares five different continuous sensing methods: 1) always on,
-2) duty cycling, 3) sensor data batching, 4) predefined activity detection, and
-5) our filter-based approach for specifying custom wakeup conditions. We
-implement applications using these different sensing methods and use trace-based
-simulation for comparison. The rest of this section describes our trace
-collection methodology, the sensing applications that we have implemented, and
-the operation of our trace-based simulator.
+Our evaluation compares six different continuous sensing methods: 
+
+\begin{enumerate}
+\setlength{\itemsep}{-3pt}  
+
+\item \textbf{Always Awake}. Provides a baseline for the following methods in terms of event detection recall and precision.
+
+\item \textbf{Duty cycling}. A software-only solution that checks sensor readings periodically and then puts the phone to sleep. This method can be implemented on any mobile device and does not require special hardware support.
+
+\item \textbf{Sensor data batching}. A hardware extension to duty cycling method that matches the Always Awake method in terms of detection recall and precision, but is expected to consume less power.
+
+\item \textbf{Activity detection}. Assumes hardware support for activity detection, specifically a step detector. Allows the exploration of the benefits of hardware-based activity recognition as a wake-up condition.
+
+\item \textbf{Custom filter-based wake-up condition}. Assumes hardware support for the selection of a pre-defined data filter and customization of filter and wake-up parameters. Allows us to explore the benefits of filter customization.
+
+\item \textbf{Oracle}, a hypothetical, ideal wake-up condition. The device only wakes up when there exists an event of interest to be recognized. Such a wake-up condition would achieve the same detection precision and recall as Always Awake, with the lowest possible energy consumption. The difference between the power consumption of this method and the method using custom filter-based wake-up conditions gives an upper bound on the potential benefits of fully configurable hardware, beyond limited data filter selection.
+
+\end{enumerate}
+
+We implement applications using these different sensing methods and use trace-based simulation for comparison. The rest of this section describes our trace collection methodology, the sensing applications that we have implemented, and the operation of our trace-based simulator.
 
 %%  alternative implementations of
 %% applications that perform continuous sensing.  We consider approaches that
@@ -31,25 +44,30 @@ to collect the ground truth about events and accelerometer traces for
 our experiments. The robot performed a sequence of actions in a
 course, and we logged these actions and the timestamps for the
 beginning and the end of each action. This log represents the ground
-truth for our experiments. We also logged the robot's accelerometer
-readings by attaching a Google Nexus 4 to the back of the robot.
+truth for our experiments. We also logged the robot's acceleration by 
+attaching a Google Nexus 4 to the back of the robot. The smartphone was 
+used to run an application that kept the device continuously awake and 
+recorded all the accelerometer readings. The accelerometer trace collected 
+for each course is an ordered set of
+accelerometer readings. Each reading contains the x, y and z
+components of the acceleration vector and a timestamp indicating when
+the reading was produced.
 
-To get statistically significant results, the robot was programmed to
-perform its course multiple times. Each course generated a separate
-ground truth log and an accelerometer trace. In a course, the robot
-performed five different actions: standing idle, walking,
-seat-to-stand transition, stand-to-seat transition, and headbutt. To
-eliminate bias, these actions were generated randomly in each
-course. We divided courses into three different groups to cover a
-range of activity levels. Courses in groups 1, 2 and 3 spent 90\%,
-50\% and 10\% of the time standing idle, respectively. The reminder of
-the time was allocated as follows: 90\% for walking, 9\% for
-transitions between seating and standing, and 1\% for headbutts. This
-setups allows us to experiment with detecting actions that are common,
-somewhat frequent, and rare. Figure~\ref{fig:actionTimes} shows the
-average amount of time that each action is being performed in the
-traces in each group, as a percentage of the average trace
-length. {\em TODO: mention how many courses from each group we ran}
+To get statistically significant results, the robot was programmed to run multiple different 
+courses. In a course, the robot performed five different types of actions: standing idle, 
+walking, sit-to-stand transitions, stand-to-sit transitions, and headbutts. We divided the 
+courses into three different groups to cover an increasing amount of activity levels. Courses in 
+groups 1, 2 and 3 spent 90\% , 50\% and 10\% of the time standing idle, respectively. The 
+reminder of the time was allocated as follows: 73\% for walking, 24\% for transitions between 
+sitting and standing, and 3\% for headbutts. Figure~\ref{fig:actionTimes} shows the average 
+amount of time that each action is performed in each group, as a percentage of the average time 
+taken to complete the course. This set-up allows us to experiment with detecting actions that 
+are common, somewhat frequent, and rare. In total, the robot ran 18 different courses, 
+partitioned as follows: 9 for the group 1, 6 for group 2 and 3 for group 3. We chose to run more 
+course in groups 1 and 2 because of the lower activity levels compared to group 3. To eliminate 
+bias, the list of actions was generated randomly for each course, based on the expected 
+probabilities of each action occurring. Running each course generated a separate ground truth 
+log of actions and an accelerometer trace.  
 
 \begin{figure}[t]
 	\includegraphics[width=8.5cm]{aibo_ers_210.jpg}
@@ -59,84 +77,129 @@ length. {\em TODO: mention how many courses from each group we ran}
 
 \begin{figure}[t]
 	\includegraphics[width=8.5cm]{action_times.png}
-	\caption{Time spent performing actions of specific types as a percentage or trace length}
+	\caption{Percent time spent performing actions of specific types}
 	\label{fig:actionTimes}
 \end{figure}
 
 \subsection{Applications}
 
-We have implemented three applications:
+The objective of this work is to match the recall and precision of the Always Awake approach while using less power. Our objective was not to build more accurate sensor-driven applications, but to lower the energy cost of running these kinds of algorithms. We present detection precision and recall metrics to demonstrate that the applications we used are doing a reasonable job, and are therefore legitimate choices to use in our experiments. Achieving perfect event of interest detection is not our objective. 
 
-\begin{itemize}
+\todo[inline]{Ashvin: as stated, this sentences sounds like we carefully chose applications that would work well for us (thus introducing bias), and they do "okay" with our approach.
+consider dropping or rewording this entire sentence. e.g., it is not clear what point the sentence is making. The sentence (achieving perfect ..) could also be dropped}
 
-\item {\bf Steps} counts how many steps the dog takes when it walks by
-  looking for local maxima in the x-axis of the acceleration trace.
+For our microbenchmarks, we implemented three applications:
+
+The \textbf{Step} application counts how many steps the robot takes when it walks. It's algorithm is based on the human step detection algorithm proposed by Ryan Libby in \cite{libbyFootstepDetection}. The application takes in raw accelerometer readings and applies a low-pass filter on the x-axis acceleration. It then searches for local maxima in the filtered x-axis acceleration. Local maxima between $2.5\:m/s^2$ and $4.5\:m/s^2$ are detected as steps, given that no other steps were detected within the last 100 ms.
+
+The \textbf{Headbutt} application works very similarly to the Steps application. The major differences are that it uses the y-axis acceleration and that it searches for local minima between $-3.75\:m/s^2$ and $-6.75\:m/s^2$.
+
+The \textbf{Sit-Stand} application monitors changes in acceleration due to gravity on the y and z axes to determine the orientation of the device. If the z-axis (up-down relative to the dog) acceleration is between $9 m/s^2$ and $11 m/s^2$, and the acceleration on the y-axis (front-back relative to the dog) is between $-1 m/s^2$ and $1 m/s^2$, the device is in a horizontal position and the robot is assumed to be in a standing posture, as shown in Figure \ref{fig:aibo}. Similarly, if the z-axis acceleration is between $7.5 m/s^2$ and $9.5 m/s^2$, and the acceleration on the y-axis is between $3.5 m/s^2$ and $5.5 m/s^2$, the device is in an angled position and the robot is assumed to be in a sitting posture. The application detects transitions by looking for posture changes.
+
+\begin{figure}[t]
+	\includegraphics[width=8.5cm]{aa_recall_by_group.png}
+	\caption{Always Awake: Recall by Group}
+    	\label{fig:aaRecallByGroup}
+\end{figure}
 
 
-\item {\bf Stand-seat} detects transitions between seating and
-  standing by monitoring changes in the acceleration due to gravity on
-  the y and z axes.
+\begin{figure}[t]
+	\includegraphics[width=8.5cm]{aa_precision_by_group.png}
+	\caption{Always Awake: Detection Precision by Group}
+    	\label{fig:aaPrecisionByGroup}
+\end{figure}
 
-\item {\bf Headbutt} detects a headbutt motion by searching for local
-  minima on the y-axis of the acceleration trace.
+Figure \ref{fig:aaRecallByGroup} shows the average recall for all applications when executing on a phone that is kept always on.  The 
+Headbutt and Stand-Sit applications detected all the events of interest, achieving a recall of 100\%. The Steps application achieved a 
+recall above 97\% for all three groups. Figure \ref{fig:aaPrecisionByGroup2} shows the detection precision of each of the events of 
+interest averaged over the traces in each group. For all cases, the applications achieved a detection precision above 82\%.
 
-\end{itemize}
+%%	We usethese applications for evaluating always-on operation, duty cycling,
+%%	and batching. The activity detection and wake-up condition sensing
+%%	methods require programming the low-power processor. To evaluate these
+%%	methods, we developed a variant of each application that runs three
+%%	types of filters on the low-power processor: 1) simple threshold, 2)
+%%	exponential moving average, and 3) FFT. The low power processor wakes
+%%	up the phone when these filters indicate that an event of interest has
+%%	been detected. The application then runs its FFT algorithms on the
+%%	main processor to eliminate false alarms, i.e., events that where
+%%	misidentified by the low-power processor.
 
-Each application runs a set of low-pass filters based on fast-fourier
-transforms (FFT) on the main processor for activity detection. We use
-these applications for evaluating always-on operation, duty cycling,
-and batching. The activity detection and wake-up condition sensing
-methods require programming the low-power processor. To evaluate these
-methods, we developed a variant of each application that runs three
-types of filters on the low-power processor: 1) simple threshold, 2)
-exponential moving average, and 3) FFT. The low power processor wakes
-up the phone when these filters indicate that an event of interest has
-been detected. The application then runs its FFT algorithms on the
-main processor to eliminate false alarms, i.e., events that where
-misidentified by the low-power processor.
+%% \todo[inline]{This needs to be expanded.
+
+%%For each application, describe the parameters that provided the best results for each filter.   Perhaps %%this can be done using a table.   You can point out that these parameters where obtained experimentally %%and that we perform a sensitivity analysis in the next section.}
 
 \subsection{Trace-based Simulator}
 
-The accelerometer trace collected for each course is an ordered set of
-accelerometer readings. Each reading contains the x, y and z
-components of the acceleration vector and a timestamp indicating when
-the reading was produced.
+The objective of our simulations is to compare the different sensing methods in terms of detection recall, wakeup precision and power consumption for various usage scenarios. To do this, the simulator is used to process the collected traces using each of the sensing methods listed at the beginning of this section. Also, the simulator allows us to explore the parameter configuration space for each of the more complex sensing methods (duty cycling, batching, custom wake-up conditions).
 
-The simulator processes the accelerometer readings one at a time,
-similar to the way a mobile device would receive accelerometer
-readings in real-time, as they are produced by the sensor. Based on
-these readings and the wake-up condition, the simulator determines
-when the device would be woken up. The simulator also determines what
-readings need to be sent to the running applications. At the end of
-the run, the simulator outputs the following metrics:
+Each simulation run takes several inputs:
 
-\textbf{Might be better to put the following text in a table -Ashvin.}
-
-\begin{enumerate}
+\begin{itemize}
 \setlength{\itemsep}{-3pt}  
 
-\item Amount of time the device would have been awake.
+\item An accelerometer trace. These files were collected on the smart phone attached to the robot during each of the courses.
 
-\item Total number of times the device was woken up.
+\item A ground truth log file. These files were generated by the robot while performing each of the courses.
 
-\item Number of times that the device was woken up that did not result
-  in an event of interest being detected by the application.
+\item The sensing method to be used.
 
-\item True positives, false positives and false negatives for each
-  event of interest. \textbf{define each precisely -Ashvin}.
+\item A set of parameters for the sensing method used.
 
-\item Recall and precision for each event of interest. \textbf{define
-  each precisely -Ashvin}.
+\end{itemize}
 
-\item Power consumption over the duration of the trace. This value is
-  derived from the energy measurements presented in
-  Section~\ref{sec:prototype}, the amount of time the device is awake,
-  the amount of time it is asleep, and the number of transitions
-  between the two states.
-\end{enumerate}
+\begin{figure}[t]
+	\includegraphics[width=8.5cm]{simulator.png}
+	\caption{Overview of the Simulator and its three main modules}
+	\label{fig:simulator}
+\end{figure}
+
+Figure \ref{fig:simulator} shows an overview of the simulator. The simulator is made up of three main modules: a \textit{Trace Processor}, a \textit{Comparator} and a \textit{Power Consumption Model}. 
+
+The \textit{Trace Processor} simulates both the low-power and the main processor. It takes the accelerometer trace and handles the readings one at a time, similar to the way a mobile device would receive accelerometer readings in real-time, as they are produced by the sensor. Based on the sensing method used and its parameters, the \textit{Trace Processor} determines when the device should wake-up and what accelerometer readings should be sent to the running application(s). This enables the \textit{Trace Processor} to output the amount of time the device is awake and asleep, the total number of wake-ups and the wake-up precision (defined below). Also, the \textit{Trace Processor} runs the detection applications and produces a list of actions detected by the applications and the times when each of the actions occurred.
+
+The \textit{Comparator} takes as inputs the file containing ground truth data about the actions performed by the robot during the course and the list of detected actions that is produced by the \textit{Trace Processor}. It compares the two lists based on action timestamps and determines detection recall and precision.
+
+Finally, the \textit{Power Consumption Model} module uses metrics from the \textit{Trace Processor} to estimate the average power consumption of the system. The input metrics are awake and asleep times of the device, and the total number of wake-ups. The \textit{Power Consumption Model} estimates power consumption based on the power consumption measurements presented in Subsections \ref{subsec:nexus} and \ref{subsec:sensorBoard}.
+
+Overall, the main metrics outputted by the simulator are:
+
+
+\todo[inline]{Move Table 3 after Table 2. What about Group 2? Why not present Precision as well.
+It is hard to gauge absolute power numbers. Why not present the ratio power over power in always awake}
+
+\begin{itemize}
+\setlength{\itemsep}{+5pt}  
+
+\item Detection recall of event of interest
+
+$Recall = \dfrac{Correctly\:detected\:actions}{Number\:of\:actions\:in\:ground\:truth}$
+
+$Recall = \dfrac{True\:Positives}{True\:Positives + False\:Negatives}$\linebreak[2]
+
+
+\item Detection precision of event of interest
+
+$Precision = \dfrac{Correctly\:detected\:actions}{Number\:of\:detected\:actions}$
+
+$Precision = \dfrac{True\:Positives}{True\:Positives + False\:Positives}$\linebreak[2]
+
+
+\item Estimated average power consumption over the duration of the trace
+
+
+\item Wake-up precision
+
+$Wakeup\:Precision = $
+
+$ = \dfrac{Number\:of\:wakeups\:with\:detected\:actions}{Number\:of\:wakeups}$\linebreak[2]
+
+\end{itemize}
+
 
 
 \subsection{Discussion}
+\label{subsec:discussion}
 
 Since we are mainly interested in actions that would normally be
 performed by humans, we configured the robot to perform actions with
@@ -159,38 +222,4 @@ live experimentation. Moreover, taking fine grain power consumption
 measurements while the robot is in motion is not trivial.
 Nonetheless, we plan to validate our simulation results using live
 experimentation in the future.
-
-\textbf{I think the following text should go in the results section. -Ashvin}
-
-Additionally, the Always Awake simulations show
-the accuracy of the implemented applications in terms of event of
-interest detection precision and recall. 
-
-
-Figure \ref{fig:aaRecallByGroup} shows the average recall for all
-applications when executing on a phone that is kept always-on.  With
-the exception of the headbutt action in Group 1, event recall is above
-95\% for all actions and groups. The headbutt action in Group 1
-appears to be an outlier because Group 1 contains traces with the
-least amount of actions and headbutts are the scarcest actions,
-occurring only about once per trace. Figure
-\ref{fig:aaPrecisionByGroup2} shows the detection precision of each of
-the events of interest averaged over the traces in each group. For all
-cases, the applications achieved a detection precision above 82\%.
-
-
-
-\begin{figure}[t]
-	\includegraphics[width=8.5cm]{aa_recall_by_group.png}
-	\caption{Always Awake: Recall by Group}
-    	\label{fig:aaRecallByGroup}
-\end{figure}
-
-
-\begin{figure}[t]
-	\includegraphics[width=8.5cm]{aa_precision_by_group.png}
-	\caption{Always Awake: Detection Precision by Group}
-    	\label{fig:aaPrecisionByGroup}
-\end{figure}
-
 
