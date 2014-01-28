@@ -22,8 +22,6 @@ a static wake-up condition sufficient for all applications?
 \item How much additional benefit can be obtained from fully programmable wake-up conditions 
 over customizable wake-up conditions based on data filtering and thresholding?
 
-\item How dependent are the best filter/threshold combinations on the usage scenario?
-
 \item Is the best sensor data filter choice dependant on the type of event of interest?
 
 \item How sensitive are detection recall and energy savings to the configuration thresholds
@@ -40,39 +38,45 @@ used in the wake-up condition?
 \subsection{Energy Savings}
 
 \begin{table*}[t]
-    \begin{tabular}{|l|l|l|l|l|l|l|}
+    \begin{tabular}{|l|l|c|c|c|c|c|c|c|}
     \hline
 	\multirow{2}{*}{~}			& \multirow{2}{*}{Approach}		& \multirow{2}{*}{\parbox{2.2cm}{Sleep Interval (seconds)}}	
-																			& \multirow{2}{*}{\parbox{1.2cm}{Power (mW)}} 
-																						& \multicolumn{3}{c|}{Recall} 													\\ \cline{5-7}
-								&								&			&			& Walking				& Headbutt					& Transitions 				\\ \hline
-	\multirow{11}{*}{Group 1}	& \multicolumn{2}{l|}{Always Awake}			& 323		& \multirow{6}{*}{98\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-4}
-								& \multirow{5}{*}{Batching}		& 2			& 350		&						&							&							\\ \cline{3-4}
-								& 								& 5			& 186		&						&							&							\\ \cline{3-4}
-								& 								& 10		& 115		&						&							&							\\ \cline{3-4}
-								& 								& 20		& 80.1		&						&							&							\\ \cline{3-4}
-								& 								& 30		& 68.3		&						&							&							\\ \cline{2-7}
-								& \multirow{5}{*}{Duty Cycling}	& 2			& 339		& 94\%					& 57\%						& 97\%						\\ \cline{3-7}
-								& 								& 5			& 217		& 82\%					& 14\%						& 47\%						\\ \cline{3-7}
-								& 								& 10		& 140		& 63\%					& 29\%						& 28\%						\\ \cline{3-7}
-								& 								& 20		& 86.3		& 48\%					& 14\%						& 32\%						\\ \cline{3-7}
-								& 								& 30		& 63.1		& 31\%					& 7\%						& 12\%						\\ \hline
-	\multirow{11}{*}{Group 3}	& \multicolumn{2}{l|}{Always Awake}			& 323		& \multirow{6}{*}{97\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-4}
-								& \multirow{5}{*}{Batching}		& 2			& 350		&						&							&							\\ \cline{3-4}
-								& 								& 5			& 186		&						&							&							\\ \cline{3-4}
-								& 								& 10		& 115		&						&							&							\\ \cline{3-4}
-								& 								& 20		& 80.1		&						&							&							\\ \cline{3-4}
-								& 								& 30		& 68.3		&						&							&							\\ \cline{2-7}
-								& \multirow{5}{*}{Duty Cycling}	& 2			& 332		& 89\%					& 47\%						& 89\%						\\ \cline{3-7}
-								& 								& 5			& 257		& 76\%					& 28\%						& 26\%						\\ \cline{3-7}
-								& 								& 10		& 198		& 64\%					& 27\%						& 25\%						\\ \cline{3-7}
-								& 								& 20		& 133		& 42\%					& 19\%						& 19\%						\\ \cline{3-7}
-								& 								& 30		& 99.1		& 30\%					& 9\%						& 14\%						\\ \hline
+																						& \multicolumn{3}{c|}{Power (mW)}		& \multicolumn{3}{c|}{Recall} 													\\ \cline{4-9}
+								&								&						& Walking	& Headbutt	& Transitions	& Walking				& Headbutt					& Transitions 				\\ \hline
+	\multirow{14}{*}{Group 1}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{98\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
+								& \multirow{5}{*}{Batching}		& 2						& \multicolumn{3}{c|}{350}				&						&							&							\\ \cline{3-6}
+								& 								& 5						& \multicolumn{3}{c|}{186}				&						&							&							\\ \cline{3-6}
+								& 								& 10					& \multicolumn{3}{c|}{115}				&						&							&							\\ \cline{3-6}
+								& 								& 20					& \multicolumn{3}{c|}{80.1}				&						&							&							\\ \cline{3-6}
+								& 								& 30					& \multicolumn{3}{c|}{68.3}				&						&							&							\\ \cline{2-9}
+								& \multirow{5}{*}{Duty Cycling}	& 2						& \multicolumn{3}{c|}{339}				& 94\%					& 57\%						& 97\%						\\ \cline{3-9}
+								& 								& 5						& \multicolumn{3}{c|}{217}				& 82\%					& 14\%						& 47\%						\\ \cline{3-9}
+								& 								& 10					& \multicolumn{3}{c|}{140}				& 63\%					& 29\%						& 28\%						\\ \cline{3-9}
+								& 								& 20					& \multicolumn{3}{c|}{86.3}				& 48\%					& 14\%						& 32\%						\\ \cline{3-9}
+								& 								& 30					& \multicolumn{3}{c|}{63.1}				& 31\%					& 7\%						& 12\%						\\ \cline{2-9}
+								& \multicolumn{2}{l|}{Predifined Activity Detection}	& \multicolumn{3}{c|}{48.3}				& \multirow{3}{*}{98\%}	& 36\%						& 87\%						\\ \cline{2-6}\cline{8-9}
+								& \multicolumn{2}{l|}{Filter-based Wake-up Condition}	& 48.3		& 60.3		& 18.6			& 						& \multirow{2}{*}{100\%}	& \multirow{2}{*}{100\%}	\\ \cline{2-6}
+								& \multicolumn{2}{l|}{Oracle Wake-up Condition}			& 41.5		& 59.6		& 16.4			& 						& 							& 							\\ \hline \hline
+	\multirow{14}{*}{Group 3}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{97\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
+								& \multirow{5}{*}{Batching}		& 2						& \multicolumn{3}{c|}{350}				&						&							&							\\ \cline{3-6}
+								& 								& 5						& \multicolumn{3}{c|}{186}				&						&							&							\\ \cline{3-6}
+								& 								& 10					& \multicolumn{3}{c|}{115}				&						&							&							\\ \cline{3-6}
+								& 								& 20					& \multicolumn{3}{c|}{80.1}				&						&							&							\\ \cline{3-6}
+								& 								& 30					& \multicolumn{3}{c|}{68.3}				&						&							&							\\ \cline{2-9}
+								& \multirow{5}{*}{Duty Cycling}	& 2						& \multicolumn{3}{c|}{332}				& 89\%					& 47\%						& 89\%						\\ \cline{3-9}
+								& 								& 5						& \multicolumn{3}{c|}{257}				& 76\%					& 28\%						& 26\%						\\ \cline{3-9}
+								& 								& 10					& \multicolumn{3}{c|}{198}				& 64\%					& 27\%						& 25\%						\\ \cline{3-9}
+								& 								& 20					& \multicolumn{3}{c|}{133}				& 42\%					& 19\%						& 19\%						\\ \cline{3-9}
+								& 								& 30					& \multicolumn{3}{c|}{99.1}				& 30\%					& 9\%						& 14\%						\\ \cline{2-9}
+								& \multicolumn{2}{l|}{Predifined Activity Detection}	& \multicolumn{3}{c|}{321}				& \multirow{3}{*}{97\%}	& 95\%						& 86\%						\\ \cline{2-6}\cline{8-9}
+								& \multicolumn{2}{l|}{Filter-based Wake-up Condition}	& 321		& 65.7		& 51.7			& 						& \multirow{2}{*}{100\%}	& \multirow{2}{*}{100\%}	\\ \cline{2-6}
+								& \multicolumn{2}{l|}{Oracle Wake-up Condition}			& 266		& 62.9		& 34.9			& 						& 							& 							\\ \hline
     \end{tabular}
-	\caption{Summary of achieved recall and power consumption for the Always Awake, Duty Cycling and Batching approaches}
+	\caption{Summary of achieved recall and power consumption for each sensing approach}
 	\label{table:summaryAA-DC-BATCHING}
 \end{table*}
 
+\iffalse
 \begin{table}[t]
     \begin{tabular}{|l|l|l|l|}
 	\hline
@@ -87,6 +91,7 @@ used in the wake-up condition?
 	\caption{Summary of achieved recall and power consumption for the Wake-up Conditions approach}
 	\label{table:summaryWUC}
 \end{table}
+\fi
 
 This section answers the first three questions. Table \ref{table:summaryAA-DC-BATCHING} summarizes the power and event of interest recall data for the Always Awake scenario and for various wake-up intervals for the Duty Cycling and Batching approaches. Similarly, Table \ref{table:summaryWUC} summarizes the results for the approach that uses wake-up conditions. The information in this figure represents the best wake-up conditions in terms of power consumption that achieved the same recall as the Always Awake scenario.
 
@@ -116,6 +121,7 @@ Using the customizable filter-based wake-up condition approach we were able to m
 
 \subsection{Predefined Action vs Predefined Filter}
 
+\iffalse
 \begin{table*}[t]
     \begin{tabular}{|l|l|l|l|l|l|l|l|}
     \hline
@@ -132,6 +138,7 @@ Using the customizable filter-based wake-up condition approach we were able to m
 	\caption{Detection recall and power consumption for the Headbutts and Transitions actions using fixed or custom wake-up conditions}
 	\label{table:predifinedActionVsPredefinedFilter}
 \end{table*}
+\fi
 
 This section answers question 4. For this purpose, we assume that step detection is the one action that our hardware supports and we compare that with the benefits of custom filters for each of the other two applications. 
 
@@ -168,6 +175,7 @@ This section answers question 5. We wanted to examine how much additional benefi
 
 We used the list of events detected by the Always Awake simulations to determine the awake time, asleep time and number of wake-ups for the Oracle wake-up condition. These values were then used to estimate power consumption. Table \ref{table:WUCoracle} compares the power compunction of the Oracle with the power consumption for the best custom filter-based wake-up condition presented earlier. The difference between these values represents how much additional power savings can potentially be achieve by allowing developers full-programmability of the wake-up conditions. Table \ref{table:WUCoracle} also presents this difference as a percentage of the power consumption of the Always Awake approach. For most usage scenarios, having an Oracle wake-up condition results in less that 5.5\% additional power savings. For high-frequency events (walking in groups 2 and 3), the Oracle has significantly more power savings, 10.9\% and 17.0\%, respectively.
 
+\iffalse
 \subsection{Usage Dependence}
 
 \begin{figure}[h]
@@ -179,6 +187,7 @@ We used the list of events detected by the Always Awake simulations to determine
 This section answers question 6. Figure \ref{fig:wucStepsRecallByGroupAndThreshold} shows the step recall based on the wake-up condition threshold value for each of the groups. We note that for different usage scenarios (i.e. each of the groups), the recall does not change by more than 10\% for any given threshold value. Similar results were found for all the events of interest. 
 
 We conclude that the best filter and threshold combinations are not dependent on the usage scenario.
+\fi
 
 \subsection{Sensor Data Filter Choice}
 
@@ -196,7 +205,7 @@ We conclude that the best filter and threshold combinations are not dependent on
 	\label{table:WUCfilters}
 \end{table*}
 
-This section answers question 7. Table \ref{table:WUCfilters} lists the best achieved power consumption by the Custom filter-based Wake-Up Condition approach using each of the sensor data filters, while matching the detection recall of the Always Awake approach. We observe that the best and worst sensor data filter changes depending on the event of interest. The Null filter had the second best power consumption for all of the applications. The EMA-LPF has the lowest power consumption for the Walking and Transitions applications, while the FFT-LPF had the lowest power consumption for the Headbutts application. 
+This section answers question 6. Table \ref{table:WUCfilters} lists the best achieved power consumption by the Custom filter-based Wake-Up Condition approach using each of the sensor data filters, while matching the detection recall of the Always Awake approach. We observe that the best and worst sensor data filter changes depending on the event of interest. The Null filter had the second best power consumption for all of the applications. The EMA-LPF has the lowest power consumption for the Walking and Transitions applications, while the FFT-LPF had the lowest power consumption for the Headbutts application. 
 
 We observe that different data filters are optimal for different applications. Even in cases where the same filter type is optimal, the configuration parameters for the filter and the wake-up thresholds may be different. Additionally, applications might only be interested in the acceleration values on specific axes, preventing the same filter from being shared with other applications.
 
@@ -208,7 +217,7 @@ We observe that different data filters are optimal for different applications. E
     \label{fig:wucHeadbuttFFTRecallPowerGroup3}
 \end{figure}
 
-This section answers question 8. Figure \ref{fig:wucHeadbuttFFTRecallPowerGroup3} shows the detection recall and power consumption for the Headbutt application using the best wake-up condition. Similar graphs were generated for the other applications, but were omitted due to lack of space. We note that the choice of threshold is important, as choosing a threshold that is too strict will cause a significant drop-off in the achieved recall. However, choosing a threshold that is too lenient will result in additional power consumption without any extra benefit to recall because of unnecessary wake-ups. 
+This section answers question 7. Figure \ref{fig:wucHeadbuttFFTRecallPowerGroup3} shows the detection recall and power consumption for the Headbutt application using the best wake-up condition. Similar graphs were generated for the other applications, but were omitted due to lack of space. We note that the choice of threshold is important, as choosing a threshold that is too strict will cause a significant drop-off in the achieved recall. However, choosing a threshold that is too lenient will result in additional power consumption without any extra benefit to recall because of unnecessary wake-ups. 
 
 \subsection{Macrobenchmarks}
 
@@ -237,7 +246,7 @@ This section answers question 8. Figure \ref{fig:wucHeadbuttFFTRecallPowerGroup3
 	\label{table:macrobenchmarks}
 \end{table*}
 
-This section answers question 9. We collected three accelerometer traces of three different individuals performing routine daily activities. The first trace is 2 hours and 10 minutes long captured during an individual's morning commute. The second trace is 1 hour and 2 minutes long and captured by a person working in a retail store. The third trace is 3 hours and 17 minutes long, captured by a person working in an office environment. Roughly 20\% to 45\% of each trace is spent walking. This usage scenario is similar with walking in groups 2 and 3 for the microbenchmarks. 
+This section answers question 8. We collected three accelerometer traces of three different individuals performing routine daily activities. The first trace is 2 hours and 10 minutes long captured during an individual's morning commute. The second trace is 1 hour and 2 minutes long and captured by a person working in a retail store. The third trace is 3 hours and 17 minutes long, captured by a person working in an office environment. Roughly 20\% to 45\% of each trace is spent walking. This usage scenario is similar with walking in groups 2 and 3 for the microbenchmarks. 
 
 Table \ref{table:macrobenchmarks} shows a summary of the results obtained by running the simulator using these traces. Since ground truth information is not available, detection recall is determined by comparing the steps detected by each wake-up approach with those detected by the Always Awake approach.
 
