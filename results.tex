@@ -73,7 +73,7 @@ used in the wake-up condition?
 								& \multicolumn{2}{l|}{Oracle Wake-up Condition}			& 266		& 62.9		& 34.9			& 						& 							& 							\\ \hline
     \end{tabular}
 	\caption{Summary of achieved recall and power consumption for each sensing approach}
-	\label{table:summaryAA-DC-BATCHING}
+	\label{table:summaryRecallPower}
 \end{table*}
 
 \iffalse
@@ -93,9 +93,7 @@ used in the wake-up condition?
 \end{table}
 \fi
 
-This section answers the first three questions. Table \ref{table:summaryAA-DC-BATCHING} summarizes the power and event of interest recall data for the Always Awake scenario and for 
-various wake-up intervals for the Duty Cycling and Batching approaches. Similarly, Table \ref{table:summaryWUC} summarizes the results for the approach that uses wake-up 
-conditions. The information in this figure represents the best wake-up conditions in terms of power consumption that achieved the same recall as the Always Awake scenario.
+This section answers the first three questions. Table \ref{table:summaryRecallPower} summarizes the power and event of interest recall data for the each of the wake-up approaches tested in our experiments.
 
 Duty cycling has significant drawbacks compared to other wakeup approaches. Using this approach with a sleep interval of 2 seconds actually resulted in an increase in power 
 consumption compared to the Always Awake approach and a decrease in detection recall. This is a result of frequent transitioning between the awake and asleep states. Using sleep 
@@ -122,24 +120,23 @@ includes the time spent transitioning between the awake and asleep states and vi
 order to collect sensor data. Batching on the other hand, only keeps the device awake for just enough time to transfer the entire batch of sensor data from the hardware sensor and 
 to allow the application(s) to process the sensor readings. We estimated this time to be about 10\% of the sleep interval. 
 
-% Thus, for Duty Cycling with a sleep interval of 5 seconds, the time spent awake, asleep and transitioning is 44\%, 33\% and 22\% respectively. For Batching with a sleep interval 
-of 5 seconds, the time spent awake, asleep and transitioning is 10\%, 50\% and 40\%, respectively. Therefore, for this sleep interval, Batching results in lower power consumption. 
-
+\iffalse
+Thus, for Duty Cycling with a sleep interval of 5 seconds, the time spent awake, asleep and transitioning is 44\%, 33\% and 22\% respectively. For Batching with a sleep interval of 5 seconds, the time spent awake, asleep and transitioning is 10\%, 50\% and 40\%, respectively. Therefore, for this sleep interval, Batching results in lower power consumption. 
+\fi
 \begin{table*}[t]
     \begin{tabular}{|l|l|l|l|}
 	\hline
-    Action      					& Data Filter & Threshold \\ \hline
+    Action      					& Data Filter 									& Threshold(s) \\ \hline
     Walking     					& EMA-LPF (alpha = 50\%) 						& x-axis $\geq 2 m/s^2$ 		\\ \hline
 	Headbutts   					& FFT-LPF (relative energy threshold = 10\%) 	& y-axis $\leq -3.5 m/s^2$ 		\\ \hline
-	\multirow{3}{*}{Transitions} 	& \multirow{3}{*}{EMA-LPF (alpha = 10\%)}		& Range Thresholds						\\ 
-									&												& $2.25 m/s^2 \leq$ y-axis $\leq 3.25 m/s^2$ 	\\ 
+	\multirow{2}{*}{Transitions} 	& \multirow{2}{*}{EMA-LPF (alpha = 10\%)}		& $2.25 m/s^2 \leq$ y-axis $\leq 3.25 m/s^2$ 	\\ 
 									&												& $8.2 m/s^2 \leq$ z-axis $\leq 9.2 m/s^2$ 	\\ \hline
     \end{tabular}
 	\caption{Filter-based Wake-up Conditions parameters that achieved the lowest power consumption while matching detection recall of the Always Awake approach}
 	\label{table:WUCparameters}
 \end{table*}
 
-Using the customizable filter-based wake-up condition approach we were able to match the detection recall of the Always Awake approach and significantly reduce power consumption in most scenarios. In fact, this approach achieved the lowest power consumption in every scenario other than step detection in group 3. All these scenarios are similar in that the event of interest occurs infrequently (less than 15\% of the time, as seen in Figure \ref{fig:actionTimes}). Walking represents about 63\% of the courses in group 3. For this scenario, only the batching approached achieved better energy savings. Table \ref{table:WUCparameters} lists the data filter and threshold parameters that resulted in the best performance. Wake-up conditions with these parameters had the lowest power consumption while matching the detection recall of the Always Awake approach.
+Table~\ref{table:summaryRecallPower} includes the data for the customizable filter-based wake-up condition approach. Table \ref{table:WUCparameters} lists the data filter and threshold parameters that resulted in the best performance; lowest power consumption while matching the detection recall of the Always Awake approach. This approach achieved the lowest power consumption in every scenario other than step detection in group 3. All these scenarios are similar in that the event of interest occurs infrequently (less than 15\% of the time). Walking represents about 63\% of the courses in group 3. For this scenario, only the batching approach achieved better power savings.
 
 \subsection{Predefined Action vs Predefined Filter}
 
@@ -164,9 +161,9 @@ Using the customizable filter-based wake-up condition approach we were able to m
 
 This section answers question 4. For this purpose, we assume that step detection is the one action that our hardware supports and we compare that with the benefits of custom filters for each of the other two applications. 
 
-We start off by selecting the best wake-up condition for step detection (EMA-LPF data filter with $alpha = 50\%$ and a x-axis minimum threshold of $2\:m/s^2$, as shown in Table \ref{table:WUCparameters}). We use this wake-up condition and attempt to detect headbutts and stance transitions. The top part of Table \ref{table:predifinedActionVsPredefinedFilter} shows the results in terms or detection recall and power consumption. In the bottom half of the table we present the results for the same metrics when we used the best wake-up condition for those specific actions (see Table \ref{table:WUCparameters}). 
+We start off by selecting the best wake-up condition for step detection (EMA-LPF data filter with $alpha = 50\%$ and a x-axis minimum threshold of $2\:m/s^2$, as shown in Table \ref{table:WUCparameters}). We use this wake-up condition and attempt to detect headbutts and stance transitions. The results in terms of detection recall and power consumption are included in Table \ref{table:summaryRecallPower}. We compare these values with the results for the best filter-based wake-up condition.
 
-We note that in every single case, using a custom filter increased detection recall and in most cases reduced power consumption. For the headbutt action, recall more than doubled for groups 1 and 2. For group 3, the wake-up condition used for step detection resulted in all headbutts being detected. However, this required almost 400\% additional power usage compared to the best custom wake-up condition for headbutts. For transitions, using a custom filter increased recall to 100\% for every group and reduced power consumption by at least a factor of 2.5. In terms of power consumption the best results are visible in group 3, the group with the highest amount of walking. In group 3, the energy consumption was reduced by approximately 84\%.
+We note that for both the Headbutt and Transition actions, using a custom filter-based wake-up condition increased detection recall to 100\% and in most cases reduced power consumption. For group 3, the wake-up condition used for step detection resulted in 95\% of headbutts being detected. However, this required almost 400\% additional power compared to the best filter-based wake-up condition for headbutts. For transitions, using a custom filter reduced power consumption by at least a factor of 2.5. In terms of power consumption the best results are visible in group 3, the group with the highest amount of walking. In group 3, the energy consumption was reduced by approximately 84\%.
 
 We can conclude that using a fixed wake-up condition (or predefined hardware supported action detection) may work well for a small set of application, but is inefficient for most other applications. As such, developers should be able to configure the wake-up conditions based on the needs of their applications. 
 
@@ -235,7 +232,7 @@ We observe that different data filters are optimal for different applications. E
 
 \begin{figure}[h]
 	\includegraphics[width=8.5cm]{wuc_hb_fft_group3.png}
-	\caption{}
+	\caption{Recall and Power Consumption at various wake-up thresholds for the Headbutt application}
     \label{fig:wucHeadbuttFFTRecallPowerGroup3}
 \end{figure}
 
