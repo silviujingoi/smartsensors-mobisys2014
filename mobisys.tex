@@ -1,5 +1,5 @@
-\documentclass{sig-alternate-10pt}
-\usepackage{epsfig, morefloats, graphicx, lipsum, pdfpages, multirow, todonotes}
+\documentclass[letterpaper,twocolumn,10pt]{article}
+\usepackage{usenix, epsfig, morefloats, graphicx, lipsum, pdfpages, multirow, todonotes, endnotes}
 
 \graphicspath{ {./figures/} }
 
@@ -11,10 +11,37 @@
 \date{}
 
 
-\title{SmartSensors: Energy-efficient sensing on mobile devices}
-\author{Silviu Jingoi, Wilson To$^\dagger$, Italo De Moraes Garcia, Kevin Lee, Eyal de Lara and Ashvin Goel$^\dagger$ \\
-\affaddr{Department of Computer Science}  \\ \affaddr{$^\dagger$Department of Electrical and Computer Engineeering} \\ \affaddr{University of Toronto}}
+%make title bold and 14 pt font (Latex default is non-bold, 16 pt)
+\title{\Large \bf SmartSensors: Energy-efficient sensing on mobile devices}
+
+%for single author (just remove % characters)
+\author{
+{\rm Silviu Jingoi}\\
+University of Toronto
+\and
+{\rm Wilson To}\\
+University of Toronto
+\and
+{\rm Italo De Moraes Garcia}\\
+University of Toronto
+\and
+{\rm Kevin Lee}\\
+University of Toronto
+\and
+{\rm Eyal de Lara}\\
+University of Toronto
+\and
+{\rm Ashvin Goel}\\
+University of Toronto
+} % end author
+
 \maketitle
+
+
+%\title{}
+%\author{Silviu Jingoi, Wilson To$^\dagger$, Italo De Moraes Garcia, Kevin Lee, Eyal de Lara and Ashvin Goel$^\dagger$ \\
+%\affaddr{Department of Computer Science}  \\ \affaddr{$^\dagger$Department of Electrical and Computer Engineeering} \\ \affaddr{University of Toronto}}
+%\maketitle
 
 
 \input{abstract}
@@ -28,11 +55,7 @@
 \input{conclusion}
 
 
-\bibliographystyle{abbrv}
-
-\bibliography{mobisys}
-
-
-%\input{extra-figures}
+{\footnotesize \bibliographystyle{acm}
+\bibliography{mobisys}}
 
 \end{document}
