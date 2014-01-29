@@ -36,55 +36,65 @@ run, based on the expected probabilities of each action occurring.
 The simulator evaluated each trace for each of the following sensing
 configurations:
 
+\textbf{Always Awake} The applications keep the phone awake all the
+time constantly collecting accelerometer readings.  This setup
+achieves the highest detection
+recall~\footnote{$Recall=TruePositives/(TruePositives+FalseNegatives)$}
+and
+precision~\footnote{$Precision=TruePositives/(TruePositives+FalsePositives)$}
+and provides a baseline for comparison.
 
-\textbf{Always Awake} Provides a baseline for the following
-  methods in terms of event detection recall and precision.
+\textbf{Duty cycling} We modified the applications so that they check
+sensor readings periodically and then put the phone to sleep.  On
+wake-up, the phone is kept awake for 4 seconds in order to collect
+sensor data.  If an action is detected, the phone is kept awake for
+another 4 second, and goes to sleep otherwise.  This software only
+implementation runs on any mobile device and does not require special
+hardware support.
 
-\textbf{Duty cycling} A software-only solution that checks
-  sensor readings periodically and then puts the phone to sleep. This
-  method can be implemented on any mobile device and does not require
-  special hardware support.
+\textbf{Batching} This version of the applications leverage the
+low-power processor to collect and batch accelerometer readings while
+the main processor sleeps.  The phone wakes up periodically, reads the
+batch of sensor readings, runs the detection algorithm and goes back
+to sleep.
 
-\textbf{Batching} A hardware extension to duty
-  cycling method that matches the Always Awake method in terms of
-  detection recall and precision, but is expected to consume less
-  power.
+\textbf{Activity} This configuration emulates hardware support for
+recognizing a limited number of predefined activities, such as is
+available on the MotoX.  For this purpose, we hardwired the
+smartsensor as a {\em step detector} (EMA filter with alpha = 50\% and
+x-axis > 2 $m/s^2$).  The  applications register an even handler for
+the {\em step activity} and put the phone to sleep.  On wake-up, the
+applications acquire a batch of sensor readings from the smartsensor,
+run their detection algorithm, and go back to sleep.
 
-\textbf{Activity} Assumes hardware support for
-  activity detection, specifically a step detector.  Allows the
-  exploration of the benefits of hardware-based activity recognition
-  as a wake-up condition.
+\textbf{Filter} We let application define their own custom wake up
+condition by configuring the filter and threshold used by the
+smartsensor.  The applications register an even handler for the custom
+event of interest and put the phone to sleep.  On wake-up, the
+applications acquire a batch of sensor readings from the smartsensor,
+run their detection algorithm, and go back to sleep.
 
-\textbf{Filter} Assumes hardware
-  support for the selection of a pre-defined data filter and
-  customization of filter and wake-up parameters. Allows us to explore
-  the benefits of filter customization.
+\textbf{Oracle} A hypothetical ideal implementation that only wakes up
+when an event of interest occurs.  Such a wake-up condition would
+achieve the same detection precision and recall as Always Awake, with
+the lowest possible energy consumption. The difference between the
+power consumption of this method and the method using custom
+filter-based wake-up conditions gives an upper bound on the potential
+benefits of fully configurable hardware, beyond limited data filter
+selection.
 
-\textbf{Oracle} A hypothetical, ideal wake-up condition. The
-  device only wakes up when there exists an event of interest to be
-  recognized. Such a wake-up condition would achieve the same
-  detection precision and recall as Always Awake, with the lowest
-  possible energy consumption. The difference between the power
-  consumption of this method and the method using custom filter-based
-  wake-up conditions gives an upper bound on the potential benefits of
-  fully configurable hardware, beyond limited data filter selection.
-
-  The simulator replays the collected traces for each of the
-  applications described in Section~\ref{sec:application} and each of
-  the above sensing strategies, and determines the the amount of time
-  the smartphone is awake and asleep and the total number of wake-ups.
-  In addition, for each application the simulator determines its
-  recall~\footnote{$Recall=TruePositives/(TruePositives+FalseNegatives)$}
-  and
-  precision~\footnote{$Precision=TruePositives/(TruePositives+FalsePositives)$}. Finally, using an energy model derived from measurements of our
-  smartsensor prototype, the simulator estimated the average power
-  consumption of each configuration.  For {\em Always Awake} and {\em
-    Duty Cycling}, the power model accounts only for the energy
-  consumption of the Nexus 4.  For {\em Batching} and {\em Activity}
-  the model also includes the cost of the simple TI MSP430
-  micro-controller.  Finally, {\em Filter} and {\em Oracle} include
-  the cost either the TI MSP430 or TI Stellaris LM4F120H5QR, depending
-  on the condition being evaluated.
+For each sensing strategies, and determines the the amount of time the
+smartphone is awake and asleep and the total number of wake-ups.  In
+addition, for each application the simulator determines its recall and
+precision.  Finally, using an energy model derived from measurements
+of our smartsensor prototype, the simulator estimated the average
+power consumption of each configuration.  For {\em Always Awake} and
+{\em Duty Cycling}, the power model accounts only for the energy
+consumption of the Nexus 4.  For {\em Batching} and {\em Activity} the
+model also includes the cost of the simple TI MSP430 micro-controller.
+Finally, {\em Filter} and {\em Oracle} include the cost of either the
+TI MSP430 or the TI Stellaris LM4F120H5QR, depending on the condition
+being evaluated.
 
 
 
