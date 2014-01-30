@@ -43,16 +43,33 @@ activities: morning commute using public transit, walking in a retail
 store, and walking in an office.  Roughly 20\% to 45\% of each trace
 is spent walking.
 
+
+
+\begin{table*}[t]
+\centering
+    \begin{tabular}{|l|l|l|l|}
+	\hline
+    Action      					& Data Filter 									& Threshold(s) \\ \hline
+    Steps     					& EMA (alpha = 50\%) 						& x-axis $\geq 2 m/s^2$ 		\\ \hline
+	Headbutts   					& FFT (relative energy threshold = 10\%) 	& y-axis $\leq -3.5 m/s^2$ 		\\ \hline
+	\multirow{2}{*}{Transitions} 	& \multirow{2}{*}{EMA (alpha = 10\%)}		& $2.25 m/s^2 \leq$ y-axis $\leq 3.25 m/s^2$ 	\\ 
+									&												& $8.2 m/s^2 \leq$ z-axis $\leq 9.2 m/s^2$ 	\\ \hline
+    \end{tabular}
+	\caption{Smartsensor wake up conditions}
+	\label{table:WUCparameters}
+\end{table*}
+
+
 \subsection{Sensing Approaches}
 
-We simulated each trace for each of the following sensing approaches:
+We replayed each trace under the following sensing approaches:
 
 \textbf{Always Awake} The applications keep the phone awake all the
 time constantly collecting accelerometer readings.  This setup
 achieves the highest detection
-recall~\footnote{$Recall=TruePositives/(TruePositives+FalseNegatives)$}
+recall\footnote{$Recall=TruePositives/(TruePositives+FalseNegatives)$}
 and
-precision~\footnote{$Precision=TruePositives/(TruePositives+FalsePositives)$}
+precision\footnote{$Precision=TruePositives/(TruePositives+FalsePositives)$}
 and provides a baseline for comparison.
 
 \textbf{Duty cycling} We modified the applications so that they check
@@ -72,19 +89,22 @@ goes back to sleep.
 \textbf{Predefined Activity} This configuration emulates hardware
 support for recognizing a limited number of predefined activities
 (e.g., MotoX).  For this purpose, we hardwired the smartsensor as a
-{\em step detector} (EMA filter with alpha = 50\% and x-axis > 2
-$m/s^2$).  The applications register an even handler for the {\em step
-  activity} and put the phone to sleep.  On wake-up, the applications
-acquire a batch of sensor readings from the smartsensor, run their
-detection algorithm, and go back to sleep.
+{\em step detector} (EMA filter with alpha = 50\% and x-axis
+> 2 $m/s^2$).  The applications register an even handler for the {\em
+  step activity} and put the phone to sleep.  On wake-up, the
+applications acquire a batch of sensor readings from the smartsensor,
+run their detection algorithm, and go back to sleep.
 
-\textbf{Predefined Filters} We let application define their own custom
-wake up condition by selecting a filter among the predefined set described
+\textbf{Smartsensors} We let applications define their own custom wake
+up condition by selecting a filter among the predefined set described
 in Section~\ref{sec:prototype} and setting the filter's configuration
 parameters and thresholds .  The applications register an even handler
 for the custom event of interest and put the phone to sleep.  On
 wake-up, the applications acquire a batch of sensor readings from the
 smartsensor, run their detection algorithm, and go back to sleep.
+Table~\ref{table:WUCparameters} shows the wake up condition for each
+application that achieves the lowest power consumption while matching
+detection recall of the Always Awake approach.
 
 \textbf{Oracle} A hypothetical ideal implementation that only wakes up
 when an event of interest occurs.  Such a wake-up condition would
