@@ -65,20 +65,31 @@ deployment.  Smartsensors allows developers to create a broad set of
 wake-up conditions that can be used to detect a wide range of
 activities.  Simultaneously, they are significantly easier to program
 compared to fully programmable offloading.  Moreover, since the
-filters are pre-specified, their implementations can be optimized for
-each low-power processor, improving application portability between
-devices.  Furthermore, it is possible to combine the filtering and
-wake-up operations when applications register interest in the same set
-of events.  While Smartsensors could be programmed directly by
-individual applications, it is easy to imagine user-level activity
-recognition libraries that encapsulate the functionality of the
-Smartsensor to provide simple wake-up conditions for a large number of
-activities.
+filters are pre-specified, their implementations can be optimized (by
+the device manufacturer) for each low-power processor, improving
+application portability between devices.  Furthermore, it is possible
+to combine the filtering and wake-up operations when applications
+register interest in the same set of events.  While Smartsensors could
+be programmed directly by individual applications, it is easy to
+imagine user-level activity recognition libraries that encapsulate the
+functionality of the Smartsensor to provide simple wake-up conditions
+for a large number of activities.
 
-To evaluate the benefits of Smartsensors, we have developed a
-prototype implementation that extends a Nexus 4 phone with a low-power
-sensor board.  Our experiments with various accelerometer-based
-applications show that: \todo[inline]{TODO: summarize results.}
+To evaluate the benefits of Smartsensors, we built a prototype
+implementation that extends a Nexus 4 phone with a low-power sensor
+board.  To enable us to conduct controlled and repeatable experiments,
+we mounted the Smartsensor prototype on an AIBO ERA 210 robot dog, and
+we developed three applications that use accelerometer readings to
+detect actions that the robot performs (e.g., walking, standing and
+seating).  Experiments conducted on traces collected with this setup,
+as well as limited traces collected from human subjects, show that
+Smartsensors can reduce the average energy required to run continuous
+sensing application by up to 94\%, while matching the detection recall
+and precision of an approach that keeps the phone awake at all times.
+Moreover, for most of our usage scenarios,the Smartsensor approach
+achieves over 95\% of the potential power saving, indicating that an
+implementation that supports custom code offloading will
+achieve only marginal additional improvements.
 
 The rest of this paper is organized as follows.
 Section~\ref{sec:background} discusses existing approaches to
