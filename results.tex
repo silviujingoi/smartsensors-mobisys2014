@@ -47,7 +47,8 @@
 In this section we first present the result of experiments conducted
 on synthetic traces collected with our robotic platform.  We then
 present preliminary results from on a small number of traces collected
-from human subjects.  Finally, we reflect on the 
+from human subjects.  Finally, we reflect on the effects that an-board
+Smartsensor implementation would have on our results.
 
 \subsection{Synthetic Traces}
 
@@ -56,15 +57,17 @@ We experimented with our synthetic traces to answer the following questions:
 \begin{enumerate}
 \setlength{\itemsep}{-3pt}  
 
-\item How do Smartsensor compare to duty cycling and batching?
+\item What are the benefits of Smartsensor over Duty Cycling and
+  Batching?
 
-\item question about predefined activity
+\item Can Predefined Activity support a broad set of applications?
 
 \item How much additional benefit can be obtained from fully
   programmable wake-up conditions?
 
-\item 
-
+\item Are multiple different filters required, and how important it is
+  to let the application configure the filter parameters and
+  thresholds?
 
 \end{enumerate}
 
@@ -79,7 +82,7 @@ Always Awake approach provide a base line for comparison.  While the
 point of this work was not to create perfect activity detectors, the
 Always Awake implementations achieve close to perfect recall.  All
 sensing approaches achieved similar average precision (Headbutts:
-89\%, Transitions: 91\%, Walking: 0.93\%), and we therefore don't
+89\%, Transitions: 91\%, Walking: 0.93\%), and we therefore do not
 include these numbers in the table.
 
 As expected, Duty Cycling performs poorly.  Short sleep intervals
@@ -136,34 +139,32 @@ wake-up conditions.
     \multirow{2}{*}{Sensor Data Filter}    	& \multicolumn{3}{c|}{Power Consumption (mW)} \\ \cline{2-4}
 							& Steps	& Headbutts	& Transitions 	\\ \hline
     Null     				& 191		& 186		& 67.8 			\\ \hline
-	EMA   				& 188		& 228		& 43.3 			\\ \hline
-	FFT 				& 217		& 65.1 		& 88.7 			\\ \hline
+	EMA   				& {\bf 188}		& 228		& {\bf 43.3} 			\\ \hline
+	FFT 				& 217		& {\bf 65.1} 		& 88.7 			\\ \hline
 	
     \end{tabular}
-	\caption{Summary of best achieved power consumption for each of the sensor data filters for Group 2}
+	\caption{Average power for Group 2 runs with different filters.}
 	\label{table:WUCfilters}
 \end{table*}
 
-\subsubsection{Sensor Data Filter Choice}
+\subsubsection{Filter Selection and Configuration}
 
-This section answers question 6. Table \ref{table:WUCfilters} lists
-the best achieved power consumption by the Custom filter-based Wake-Up
-Condition approach using each of the sensor data filters, while
-matching the detection recall of the Always Awake approach. 
+Table~\ref{table:WUCfilters} shows the energy saving using three
+different filters for each application.  For each condition, the
+filter uses the parameters and thresholds that maximize energy saving
+while matching the application recall of Always Awake.  The condition
+that achieves the best power saving is highlighted.  The results show
+that different data filters are optimal for different applications.
+Even in cases where the same filter type is optimal, the configuration
+parameters for the filter and the wake-up thresholds different
+significantly.  
 
-We observe that different data filters are optimal for different
-applications. Even in cases where the same filter type is optimal, the
-configuration parameters for the filter and the wake-up thresholds may
-be different. 
-
-Figure \ref{fig:wucHeadbuttFFTRecallPowerGroup3} shows the detection
-recall and power consumption for the Headbutt application using the
-best wake-up condition.  We note that the choice of threshold is
-important, as choosing a threshold that is too strict will cause a
+Figure\ref{fig:wucHeadbuttFFTRecallPowerGroup3} uses the Heabbutt
+application to ilustrate the sensitivity of application recall and
+power to threshold selection.  A threshold that is too strict causes a
 significant drop-off in the achieved recall.  However, choosing a
-threshold that is too lenient will result in additional power
-consumption without any extra benefit to recall because of unnecessary
-wake-ups.
+threshold that is too lenient results in additional power consumption
+without any extra benefit to recall because of unnecessary wake-ups.
 
 \begin{figure}[h]
 	\includegraphics[width=8.5cm]{wuc_hb_fft_group3.png}
@@ -171,7 +172,9 @@ wake-ups.
     \label{fig:wucHeadbuttFFTRecallPowerGroup3}
 \end{figure}
 
-
+We conclude that in order to optimize performance, applicaitons should
+be allowed both select an optimal filter as well as configure its
+parameters and thresholds.
 
 \subsection{Human Traces}
 
@@ -208,6 +211,10 @@ Smartsensor approach come within X\% of Oracle.
 	 								& 20		& \multicolumn{3}{c|}{80.1} 					& 100\% \\ \cline{2-6}
 	 								& 30		& \multicolumn{3}{c|}{68.3} 					& 100\% \\ \hline
 	Smartsensor				&			& 136			& 77.9			& 72.6			& 100\% \\ \hline
+	Oracle				&			& 117.8			& 65.8			& 62.3			& 100\% \\ \hline
+
+
+
     \end{tabular}
 	\caption{Summary of achieved recall and power consumption for each wake-up approach for macrobenchmarks}
 	\label{table:macrobenchmarks}
@@ -215,6 +222,5 @@ Smartsensor approach come within X\% of Oracle.
 
 \subsection{Discussion}
 
-{\em TODO Add discussion about the effect of lower power consumptions
-  for the low-power sensing node.  An integrated implemtation is
-  likely to do much better. How does this affect these results?}
+{\em TODO An integrated implemetation is likely to be more power
+  efficient. How does this affect these results?}
