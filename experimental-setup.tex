@@ -1,15 +1,18 @@
 \section{Experimental Setup}
 \label{sec:experimentalSetup}
 
-While our robotic testbed allows for live experiments, we chose
-instead to use the robot to collect traces and to compare sensing
-implementations using trace base simulation.  We opted for this
-approach for several reasons.  First, it took the robot close to an
-hour to complete a single experiment.  A thorough exploration of the
-configuration space of the various sensing approaches would have
-required over a year of continuous live experiments.  Moreover, taking
-fine grain power consumption measurements while the robot is in motion
-is not trivial.
+We evaluated our implementation using trace-based simulation on traces
+collected from controlled experiments conducted with our robotic
+testebed as well as limited traces collected from human subjects.
+While our robotic testbed allows us to run live experiments, we chose
+instead to use trace base simulation for several reasons.  First, it
+took the robot close to an hour to complete a single experiment.  A
+thorough exploration of the configuration space of the various sensing
+approaches would have required over a year of continuous live
+experiments.  Moreover, taking fine grain power consumption
+measurements while the robot is in motion is not trivial.
+
+\subsection{Trace Collection}
 
 We collected our traces by having the robot perform multiple runs with
 a prototype smartphone attached to it back.  The smartphone ran an
@@ -33,8 +36,16 @@ and 2 because of the lower activity levels compared to group 3. To
 eliminate bias, the list of actions was generated randomly for each
 run, based on the expected probabilities of each action occurring.
 
-The simulator evaluated each trace for each of the following sensing
-configurations:
+To validate the applicability of our results to human scenarios, we
+collected six hours worth of accelerometer traces from three different
+individuals while they performe routine daily activities: morning
+commute using public transit, walking in a retail store, and walking
+in an office.  Roughly 20\% to 45\% of each trace is spent
+walking. 
+
+\subsection{Sensing Approaches}
+
+We simulated each trace for each of the following sensing approaches:
 
 \textbf{Always Awake} The applications keep the phone awake all the
 time constantly collecting accelerometer readings.  This setup
@@ -52,27 +63,28 @@ another 4 second, and goes to sleep otherwise.  This software only
 implementation runs on any mobile device and does not require special
 hardware support.
 
-\textbf{Batching} This version of the applications leverage the
-low-power processor to collect and batch accelerometer readings while
-the main processor sleeps.  The phone wakes up periodically, reads the
-batch of sensor readings, runs the detection algorithm and goes back
-to sleep.
+\textbf{Batching} This configuration emulates hardware support for
+collecting and batching accelerometer readings while the main
+processor sleeps (e.g. Nexus5).  The phone wakes up periodically,
+reads the batch of sensor readings, runs the detection algorithm and
+goes back to sleep.
 
-\textbf{Activity} This configuration emulates hardware support for
-recognizing a limited number of predefined activities, such as is
-available on the MotoX.  For this purpose, we hardwired the
-smartsensor as a {\em step detector} (EMA filter with alpha = 50\% and
-x-axis > 2 $m/s^2$).  The  applications register an even handler for
-the {\em step activity} and put the phone to sleep.  On wake-up, the
-applications acquire a batch of sensor readings from the smartsensor,
-run their detection algorithm, and go back to sleep.
+\textbf{Predefined Activity} This configuration emulates hardware
+support for recognizing a limited number of predefined activities
+(e.g., MotoX).  For this purpose, we hardwired the smartsensor as a
+{\em step detector} (EMA filter with alpha = 50\% and x-axis > 2
+$m/s^2$).  The applications register an even handler for the {\em step
+  activity} and put the phone to sleep.  On wake-up, the applications
+acquire a batch of sensor readings from the smartsensor, run their
+detection algorithm, and go back to sleep.
 
-\textbf{Filter} We let application define their own custom wake up
-condition by configuring the filter and threshold used by the
-smartsensor.  The applications register an even handler for the custom
-event of interest and put the phone to sleep.  On wake-up, the
-applications acquire a batch of sensor readings from the smartsensor,
-run their detection algorithm, and go back to sleep.
+\textbf{Predefined Filters} We let application define their own custom
+wake up condition by selecting a filter among the predefined set described
+in Section~\ref{sec:prototype} and setting the filter's configuration
+parameters and thresholds .  The applications register an even handler
+for the custom event of interest and put the phone to sleep.  On
+wake-up, the applications acquire a batch of sensor readings from the
+smartsensor, run their detection algorithm, and go back to sleep.
 
 \textbf{Oracle} A hypothetical ideal implementation that only wakes up
 when an event of interest occurs.  Such a wake-up condition would
@@ -83,18 +95,17 @@ filter-based wake-up conditions gives an upper bound on the potential
 benefits of fully configurable hardware, beyond limited data filter
 selection.
 
-For each sensing strategies, and determines the the amount of time the
-smartphone is awake and asleep and the total number of wake-ups.  In
-addition, for each application the simulator determines its recall and
-precision.  Finally, using an energy model derived from measurements
-of our smartsensor prototype, the simulator estimated the average
-power consumption of each configuration.  For {\em Always Awake} and
-{\em Duty Cycling}, the power model accounts only for the energy
-consumption of the Nexus 4.  For {\em Batching} and {\em Activity} the
-model also includes the cost of the simple TI MSP430 micro-controller.
-Finally, {\em Filter} and {\em Oracle} include the cost of either the
-TI MSP430 or the TI Stellaris LM4F120H5QR, depending on the condition
-being evaluated.
+For each sensing approach and trace, we measured the amount of sleep
+and wake time, the total number of wake-up events, and the recall and
+precision of the application.  Finally, we used an energy model
+derived from measurements of our smartsensor prototype to estimated
+the average power consumption.  For experimens with {\em Always Awake}
+and {\em Duty Cycling}, the power model accounts only for the energy
+consumption of the Nexus 4.  For {\em Batching} and {\em Activity},
+the model also includes the cost of the simple TI MSP430
+micro-controller.  Finally, experiments that use {\em Filter} and {\em
+  Oracle} include the cost of either the TI MSP430 or the TI Stellaris
+LM4F120H5QR, depending on the application being evaluated.
 
 
 
