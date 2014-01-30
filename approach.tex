@@ -84,3 +84,9 @@ are each checking for these events independently, possibly resulting in
 redundant computation. Common steps such as thresholding and low-pass filtering
 are excellent candidates for event filters.
 
+While our work focuses on the accelerometer, various filters are commonly applied
+to data received from other sensors. Audio data can be passed though a high-cut or
+a low-cut filter in order to reduce the amount of treble or bass in the sound. Image 
+processing makes use of low-pass, high-pass and band-pass filtering
+for image modifications such as sharpening, noise reduction, edge detection etc
+~\cite{paul2005computer,marr1980theory}. 
