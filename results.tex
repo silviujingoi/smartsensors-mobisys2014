@@ -94,6 +94,7 @@ wake-up conditions.
 
 \begin{table*}[t]
 \centering
+{\small
     \begin{tabular}{|l|l|c|c|c|c|c|}
 	\hline
     \multirow{2}{*}{Sensor Data Filter}    	& \multicolumn{3}{c|}{Power Consumption (mW)} \\ \cline{2-4}
@@ -103,6 +104,7 @@ wake-up conditions.
 	FFT 				& 217		& {\bf 65.1} 		& 88.7 			\\ \hline
 	
     \end{tabular}
+}
 	\caption{Average power for Group 2 runs with different filters.}
 	\label{table:WUCfilters}
 \end{table*}
@@ -127,8 +129,8 @@ threshold that is too lenient results in additional power consumption
 without any extra benefit to recall because of unnecessary wake-ups.
 
 \begin{figure}[h]
-	\includegraphics[width=8.5cm]{wuc_hb_fft_group3.png}
-	\caption{Recall and Power Consumption at various wake-up thresholds for the Headbutt application}
+	\includegraphics[width=3.1in]{wuc_hb_fft_group3.png}
+	\caption{Threshold sensitivity for Headbutts application}
     \label{fig:wucHeadbuttFFTRecallPowerGroup3}
 \end{figure}
 
@@ -152,10 +154,11 @@ Smartsensor approach come within X\% of Oracle.
 
 \begin{table*}[t]
 \centering
+{\small
     \begin{tabular}{|l|c|c|c|c|c|c|}
     \hline
 	\multirow{2}{*}{Approach}		& \multirow{2}{*}{\parbox{2.2cm}{Sleep Interval (seconds)}}
-												& \multicolumn{3}{c|}{\parbox{1.2cm}{Power (mW)}}
+												& \multicolumn{3}{c|}{\parbox{3.2cm}{Power (mW)}}
 																								& \multirow{2}{*}{\parbox{1.5cm}{Average Recall}} \\ \cline{3-5}
 									&			& Trace 1		& Trace 2		& Trace 3 		& 							\\ 
 									&			& 37\% walking	& 22\% walking		& 20\% walking		& \\ \hline
@@ -176,7 +179,8 @@ Smartsensor approach come within X\% of Oracle.
 
 
     \end{tabular}
-	\caption{Summary of achieved recall and power consumption for each wake-up approach for macrobenchmarks}
+}
+	\caption{Event recall and power consumption for human traces.}
 	\label{table:macrobenchmarks}
 \end{table*}
 
