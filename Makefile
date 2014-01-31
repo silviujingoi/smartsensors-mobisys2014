@@ -1,13 +1,16 @@
-NAME = mobisys
+NAME = smartsensors
 TARGET = $(NAME).pdf
-SOURCE = mobisys.tex \
+SOURCE = smartsensors.tex \
      introduction.tex \
 	 related.tex \
      approach.tex \
 	 evaluation.tex \
  	 conclusion.tex \
 	 mobisys.bib \
-	 abstract.tex
+	 abstract.tex \
+ 	 prototype.tex \
+         experimental-setup.tex \
+ 	 results.tex
 
 
 
