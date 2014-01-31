@@ -5,9 +5,9 @@
     \begin{tabular}{|l|l|c|c|c|c|c|c|c|}
     \hline
 	\multirow{2}{*}{~}			& \multirow{2}{*}{Approach}		& \multirow{2}{*}{\parbox{2.2cm}{Sleep Interval (seconds)}}	
-																						& \multicolumn{3}{c|}{Power (mW)}		& \multicolumn{3}{c|}{Recall} 													\\ \cline{4-9}
+																						& \multicolumn{3}{c|}{Average Power (mW)}		& \multicolumn{3}{c|}{Recall} 													\\ \cline{4-9}
 								&								&						& Steps		& Headbutts	& Transitions	& Steps					& Headbutts					& Transitions 				\\ \hline
-	\multirow{14}{*}{Group 1}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{98\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
+	\multirow{14}{*}{\parbox{1.2cm}{Group 1 90\% idle}}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{98\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
 								& \multirow{5}{*}{Batching}		& 2						& \multicolumn{3}{c|}{350}				&						&							&							\\ \cline{3-6}
 								& 								& 5						& \multicolumn{3}{c|}{186}				&						&							&							\\ \cline{3-6}
 								& 								& 10					& \multicolumn{3}{c|}{115}				&						&							&							\\ \cline{3-6}
@@ -22,7 +22,7 @@
 								& \multicolumn{2}{l|}{Smartsensor}						& 48.3		& 60.3		& 18.6			& 						& \multirow{2}{*}{100\%}	& \multirow{2}{*}{100\%}	\\ \cline{2-6}
 								& \multicolumn{2}{l|}{Oracle}							& 41.5		& 59.6		& 16.4			& 						& 							& 							\\ \hline \hline
 								
-	\multirow{14}{*}{Group 2}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{99\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
+	\multirow{14}{*}{\parbox{1.2cm}{Group 2 50\% idle}}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{99\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
 								& \multirow{5}{*}{Batching}		& 2						& \multicolumn{3}{c|}{350}				&						&							&							\\ \cline{3-6}
 								& 								& 5						& \multicolumn{3}{c|}{186}				&						&							&							\\ \cline{3-6}
 								& 								& 10					& \multicolumn{3}{c|}{115}				&						&							&							\\ \cline{3-6}
@@ -37,7 +37,7 @@
 								& \multicolumn{2}{l|}{Smartsensor}						& 188		& 65.1		& 43.3			& 						& \multirow{2}{*}{100\%}	& \multirow{2}{*}{100\%}	\\ \cline{2-6}
 								& \multicolumn{2}{l|}{Oracle}							& 153		& 62.3		& 29.5			& 						& 							& 							\\ \hline \hline
 
-	\multirow{14}{*}{Group 3}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{97\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
+	\multirow{14}{*}{\parbox{1.2cm}{Group 3 10\% idle}}	& \multicolumn{2}{l|}{Always Awake}						& \multicolumn{3}{c|}{323}				& \multirow{6}{*}{97\%}	& \multirow{6}{*}{100\%}	& \multirow{6}{*}{100\%}	\\ \cline{2-6}
 								& \multirow{5}{*}{Batching}		& 2						& \multicolumn{3}{c|}{350}				&						&							&							\\ \cline{3-6}
 								& 								& 5						& \multicolumn{3}{c|}{186}				&						&							&							\\ \cline{3-6}
 								& 								& 10					& \multicolumn{3}{c|}{115}				&						&							&							\\ \cline{3-6}
@@ -53,6 +53,6 @@
 								& \multicolumn{2}{l|}{Oracle}							& 266		& 62.9		& 34.9			& 						& 							& 							\\ \hline
     \end{tabular}
 }
-	\caption{Average power and application recall for each sensing approach}
+	\caption{Event recall and average power for synthetic traces.}
 	\label{table:summaryRecallPower}
 \end{table*}

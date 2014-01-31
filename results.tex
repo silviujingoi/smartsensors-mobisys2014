@@ -5,14 +5,14 @@
 \label{sec:results}
 
 In this section we first present the result of experiments conducted
-on synthetic traces collected with our robotic platform.  We then
-present preliminary results from on a small number of traces collected
-from human subjects.  Finally, we reflect on the effects that an-board
-Smartsensor implementation would have on our results.
+on synthetic traces collected with our robotic testbed.  We then
+present results from experiments on a small number of traces collected
+from human subjects.  Finally, we discuss how an onboard Smartsensor
+implementation would affect our findings.
 
 \subsection{Synthetic Traces}
 
-We experimented with our synthetic traces to answer the following questions:
+We answer the following questions:
 
 \begin{enumerate}
 \setlength{\itemsep}{-3pt}  
@@ -37,13 +37,11 @@ Table~\ref{table:summaryRecallPower} presents the results of replaying
 the traces collected from the robot for the sensing approaches
 described in the previous section.  For each application, the table
 presents average power consumption and activity recall.  Results are
-averages over all the runs of the same group.  The results for the
-Always Awake approach provide a base line for comparison.  While the
-point of this work was not to create perfect activity detectors, the
-Always Awake implementations achieve close to perfect recall.  All
-sensing approaches achieved similar average precision (Headbutts:
-89\%, Transitions: 91\%, Walking: 0.93\%), and we therefore do not
-include these numbers in the table.
+averages accross runs of the same group.  We use the results for the
+Always Awake approach (which achieves close to perfect recall) as a
+base line for comparison.  All sensing approaches achieved similar
+average precision (Headbutts: 89\%, Transitions: 91\%, Walking:
+0.93\%), and we therefore do not include these numbers in the table.
 
 As expected, Duty Cycling performs poorly.  Short sleep intervals
 actually result in an increase in power consumption due to frequent
@@ -54,7 +52,7 @@ Headbutts and Transittions recall bellow 30\%.
 
 Batching matches the recall of Always Awake, but requires long
 batching intervals to achieve large energy savings.  Therefore, this
-approach may not be appropriate for applications with real time
+approach is not be appropriate for applications with timeliness
 constrains.  For example, the user of a gesture recognition
 application~\cite{liu2009uwave,schlomer2008gesture} would not be
 satisfied if the application detects the performed gesture after a
@@ -64,32 +62,31 @@ seconds.  We therefore conclude, that batching will result in
 significant energy waste for applications interested in low frequency
 events (e.g., gesture recognition, fall detection).
 
-Smartsensor achieved the lowest power consumption in every scenario
-other than step detection in group 3. All these scenarios are similar
-in that the event of interest occurs infrequently (less than 15\% of
-the time). Walking represents about 63\% of the courses in group 3.
-For this scenario, only the batching approach achieved better power
-savings.
-
+Smartsensor matches the recall of Always Awake while achieving large
+reductions in average power in all scenarios other than step detection
+in group 3, where walking represents 63\% of the trace and the device
+experiences little sleep.  Smartsensor performed best when the event
+of interest occurs infrequently, reductions power consumption by up to
+94\%.  
 
 \subsubsection{Smartsensor vs Predefined Activity}
 
 Predefined Activity performs very well for step detection (as
 expected), but results in either poor recall or low energy savings for
 the other two applications.  We conclude that hardware support for
-predefined activity detection may work well for a small set of
-application, but is inefficient for most other applications. As such,
-developers should be able to configure the wake-up conditions based on
-the needs of their applications.
+predefined activity detection may work well for specific use cases,
+but lacks the generality to support a broad set of applications.
+
 
 \subsubsection{Smartsensor vs. Oracle}
 
 By comparing the performance of the Smartsensor approach to Oracle we
 observe that for most usage scenarios, the Smartsensor approach
-achieves over 95\% of the available power saving.  We conclude that
-there is little additional benefit that could be obtained by providing
-application developer with ability to create fully programmable
-wake-up conditions.
+achieves over 95\% of the available power
+saving\footnote{$AvailableSavings=1-Oracle/AlwayAwake$}.
+We conclude that a system that allows
+custom code offloading to the low-power processor can achieve minimal
+additional power savings.
 
 
 \begin{table*}[t]
@@ -111,32 +108,38 @@ wake-up conditions.
 
 \subsubsection{Filter Selection and Configuration}
 
-Table~\ref{table:WUCfilters} shows the energy saving using three
+Table~\ref{table:WUCfilters} shows the average power using three
 different filters for each application.  For each condition, the
-filter uses the parameters and thresholds that maximize energy saving
-while matching the application recall of Always Awake.  The condition
-that achieves the best power saving is highlighted.  The results show
-that different data filters are optimal for different applications.
-Even in cases where the same filter type is optimal, the configuration
+filter uses the parameters and thresholds that minimize average power
+while matching the recall of Always Awake.  The condition that
+achieves the lowest average power is highlighted.  The results show
+that different filters are optimal for different applications.  Even
+in cases where the same filter type is optimal, the configuration
 parameters for the filter and the wake-up thresholds different
-significantly.  
+significantly.  Wake-up conditions based on EMA performed better than
+those based on FFT for Steps and Transitions.  While the use of FFT
+manages to reduce the occurance of unnecessary wake-ups (cases where
+the main processor is waken up but does not find an event of
+interest), this benefit it overshadowed by the additional power
+required to run the FFT filter.
 
-Figure\ref{fig:wucHeadbuttFFTRecallPowerGroup3} uses the Heabbutt
-application to ilustrate the sensitivity of application recall and
-power to threshold selection.  A threshold that is too strict causes a
-significant drop-off in the achieved recall.  However, choosing a
-threshold that is too lenient results in additional power consumption
-without any extra benefit to recall because of unnecessary wake-ups.
+Figure\ref{fig:wucHeadbuttFFTRecallPowerGroup3} uses the Headbutts
+application to ilustrate the importance of threshold selection.  A
+threshold that is too strict causes a significant drop-off in the
+achieved recall.  However, choosing a threshold that is too lenient
+results in additional power consumption without any extra benefit to
+recall because of unnecessary wake-ups.  This is futher evidence that
+applications should be allowed to configure their wake-up condition in
+order to optimize performance.
 
 \begin{figure}[h]
 	\includegraphics[width=3.1in]{wuc_hb_fft_group3.png}
-	\caption{Threshold sensitivity for Headbutts application}
+	\caption{Threshold sensitivity for Headbutts application.}
     \label{fig:wucHeadbuttFFTRecallPowerGroup3}
 \end{figure}
 
-We conclude that in order to optimize performance, applicaitons should
-be allowed both select an optimal filter as well as configure its
-parameters and thresholds.
+
+
 
 \subsection{Human Traces}
 
@@ -148,9 +151,8 @@ determining recall.
 
 Remarkably the results from these experiments show very similar
 benefits to the synthetic experiments for runs with low and medium
-levels of activity.  For example, the energy saving for the
-Smartsensor approach come within X\% of Oracle.
-
+levels of activity.  For example, the Smartsensor approach achieves
+at least 91\% of the available power saving in each of the traces.
 
 \begin{table*}[t]
 \centering
@@ -158,7 +160,7 @@ Smartsensor approach come within X\% of Oracle.
     \begin{tabular}{|l|c|c|c|c|c|c|}
     \hline
 	\multirow{2}{*}{Approach}		& \multirow{2}{*}{\parbox{2.2cm}{Sleep Interval (seconds)}}
-												& \multicolumn{3}{c|}{\parbox{3.2cm}{Power (mW)}}
+												& \multicolumn{3}{c|}{\parbox{5.2cm}{Average Power (mW)}}
 																								& \multirow{2}{*}{\parbox{1.5cm}{Average Recall}} \\ \cline{3-5}
 									&			& Trace 1		& Trace 2		& Trace 3 		& 							\\ 
 									&			& 37\% walking	& 22\% walking		& 20\% walking		& \\ \hline
@@ -180,7 +182,7 @@ Smartsensor approach come within X\% of Oracle.
 
     \end{tabular}
 }
-	\caption{Event recall and power consumption for human traces.}
+	\caption{Event recall and average power for human traces.}
 	\label{table:macrobenchmarks}
 \end{table*}
 
