@@ -39,7 +39,7 @@ Table~\ref{table:summaryRecallPower} presents the results of replaying
 the traces collected from the robot for the sensing approaches
 described in the previous section.  For each application, the table
 presents average power consumption and activity recall.  Results are
-averages accross runs of the same group.  We use the results for the
+averages across runs of the same group.  We use the results for the
 Always Awake approach (which achieves close to perfect recall) as a
 base line for comparison.  All sensing approaches achieved similar
 average precision (Headbutts: 89\%, Transitions: 91\%, Walking:
@@ -50,7 +50,7 @@ actually result in an increase in power consumption due to frequent
 transitioning between awake and asleep states.  Longer sleep interval
 are more effective at saving energy, but they do so by sacrificing
 recall.  For example, a sleep interval of 10 seconds reduces the
-Headbutts and Transittions recall bellow 30\%.
+Headbutts and Transitions recall bellow 30\%.
 
 Batching matches the recall of Always Awake, but requires long
 batching intervals to achieve large energy savings.  Therefore, this
@@ -118,7 +118,7 @@ condition that achieves the lowest average power is highlighted.  The
 results show that different filters are optimal for different
 applications.  Wake-up conditions based on EMA performed better than
 those based on FFT for Steps and Transitions.  While the FFT filter
-reduces the occurance of unnecessary wake-ups (cases where
+reduces the occurrence of unnecessary wake-ups (cases where
 the main processor is waken up but does not find an event of
 interest), this benefit it overshadowed by the additional power
 required to run it.
@@ -147,7 +147,7 @@ because of unnecessary wake-ups.
 
 Table~\ref{table:macrobenchmarks} shows the results from running the
 step detector application on traces collected from three human
-subjects.  Since these traces are not annotated with ground thruth, we
+subjects.  Since these traces are not annotated with ground truth, we
 use the steps detected by the Always Awake as the baseline for
 determining recall.
 
