@@ -23,11 +23,9 @@ consumption of this approach is high.
 
 To avoid keeping the device awake for extended periods of time, \emph{duty 
 cycling} allows a device to sleep for fixed, usually regular, periods of
-time. An application on Android can implement duty cycling by scheduling a wake
-up alarm using the system's alarm service and by ensuring that it has not
+time. An application on Android can implement duty cycling by scheduling a wake-up alarm using the system's alarm service and by ensuring that it has not
 acquired a wake lock. When no application has a wake lock, the operating system
-can power down the processor. When the wake up alarm fires, the processor wakes
-up and notifies the application. Next, the application collects sensor readings
+can power down the processor. When the wake-up alarm fires, the processor wakes up and notifies the application. Next, the application collects sensor readings
 for a short period of time, and then reschedules another alarm.
 
 Duty cycling has several drawbacks. While the device is sleeping, events of interest will not be 
@@ -37,7 +35,7 @@ sensor readings, the events of interest might not occur. These power transitions
 and expensive (as we show later). 
 
 The basic duty
-cycling approach can be improved by dynamically adjusting the wake up time. When
+cycling approach can be improved by dynamically adjusting the wake-up time. When
 an application is woken up and detects an event of interest, it continues to
 collect sensor readings until events do not occur for some period, after which
 it returns to its regular duty cycling schedule. This improves detection
@@ -46,22 +44,23 @@ consumption. Unfortunately, finding a good balance between accuracy and power
 savings depends on the specific application and the user's behaviour. Another
 drawback of this approach is that is does not scale well with multiple
 applications. It is possible for mutually unaware applications to implement
-conflicting wakeup schedules, resulting in little or no sleep.
+conflicting wake-up schedules, resulting in little or no sleep.
 
 \subsection{Sensor Data Batching}
 
-An extension to duty cycling is \emph{sensor data batching} in which the device
-hardware is able to collect sensor readings while the main processor is
-asleep. Upon wake up, the entire batch of sensor data is delivered to the
-application(s) that registered a listener for that specific sensor. Unlike duty
-cycling, batching requires hardware support (e.g., it is currently only
-available on the newly released Google Nexus 5, running Android 4.4), but it
-enables applications to receive all the sensor data, and hence provides detection
-accuracy similar to the Always Awake approach. However, batching affects detection
-timeliness. Applications may detect events of interest many seconds after they
-actually occurred. Also, as with the duty cycling approach, the device may wake
-up to find out that no events of interest have occurred in the current batch, which 
-is wasteful.
+An extension to duty cycling is \emph{sensor data batching} in which
+the device hardware is able to collect sensor readings while the main
+processor is asleep. Upon wake-up, the entire batch of sensor data is
+delivered to the application(s) that registered a listener for that
+specific sensor. Unlike duty cycling, batching requires hardware
+support (e.g., it is currently only available on the newly released
+Google Nexus 5, running Android 4.4), but it enables applications to
+receive all the sensor data, and hence provides detection accuracy
+similar to the Always Awake approach. However, batching affects
+detection timeliness. Applications may detect events of interest many
+seconds after they actually occurred. Also, as with the duty cycling
+approach, the device may wake up to find out that no events of
+interest have occurred in the current batch, which is wasteful.
 
 \subsection{Computation Offloading}
 \label{subsec:computationOffloading}
@@ -94,13 +93,13 @@ use the same sensor.
 Given the challenges with full computation offloading, recent mobile
 devices limit offloading to a small, predefined set of \emph{activity
   detection} algorithms. For example, the Motorola Moto X~\cite{motox}
-uses two low-power peripheral processors to wake-up the device when
+uses two low-power peripheral processors to wake up the device when
 certain events occur. A dedicated natural language processor is used
 to wake up the device when a user says the phrase ``OK Google Now''.
 Also, a contextual processor is used to turn on a part of the screen
 when the mobile device is taken out of a pocket, or start the camera
 application when the processor detects two wrist twists. Additionally,
-the latest Android 4.4~\cite{android4.4} supports specific wake up
+the latest Android 4.4~\cite{android4.4} supports specific wake-up
 events based on detecting ``significant motion'' or a step, if a device
 has appropriate sensors. However, the application developer has no
 control over the underlying activity detection algorithms, including
