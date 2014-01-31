@@ -6,9 +6,9 @@ foreground applications, such as games and web browsers.  As a result,
 current mobile devices are optimized for a use case where applications
 are used intermittently during the day, in sessions that last for
 several minutes.  For example, Alice takes a little break to pick up
-her phone, check the weather, read the latest news story and play a
+her phone, checks the weather, reads the latest news story and plays a
 game for a few minutes, and then puts it away to go back to work.  To
-maximize battery life, current mobile devices are engineered to go
+maximize battery life, current mobile devices are designed to go
 into sleep state for most of the day when they are not supporting such
 interactive usage.
 
@@ -32,7 +32,7 @@ architectures~\cite{reflex,littlerock,turducken}.  In these
 approaches, developers partition their applications to offload the
 initial filtering stages of the application to a low-power processor
 (or a hierarchy of processors).  When the code running on the low
-power processor detects the occurrence of event of interest, it
+power processor detects the occurrence of an event of interest, it
 proceeds to wake up the phone and passes control to the rest of the
 application.  While the ability to run custom code on the low-power
 hardware provides great flexibility, the significant complexity
@@ -56,8 +56,9 @@ are not covered by the set of predefined activities.
 Instead, we argue that the sensing API should expose access to
 filter-level functionality.  We present {\em Smartsensors}, an
 approach that enables programmers to create custom wake-up conditions
-by choosing among a set of predefined filtering algorithms and tuning
-their parameters.  By providing developer with access to lower-level
+by choosing among a set of predefined filtering algorithms, implemented 
+on the low-power processor, and tuning
+their parameters.  By providing developers with access to lower-level
 filters that implement commonly used algorithms (e.g., FFT,
 exponential average), as opposed to higher-level activity detectors,
 Smartsensors provide a better balance between flexibility and ease of
@@ -71,7 +72,7 @@ application portability between devices.  Furthermore, it is possible
 to combine the filtering and wake-up operations when applications
 register interest in the same set of events.  While Smartsensors could
 be programmed directly by individual applications, it is easy to
-imagine user-level activity recognition libraries that encapsulate the
+imagine activity recognition libraries that encapsulate the
 functionality of the Smartsensor to provide simple wake-up conditions
 for a large number of activities.
 

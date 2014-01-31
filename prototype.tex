@@ -83,7 +83,7 @@ the Smartsensor board detects an event based on its wake-up condition.
 In turn, the UART stub is a shell script that notifies the
 SensorManager using an Android Intent\cite{androidintents}.
 
-For our prototype we avoid modifying the Android kernel in any way.
+For our prototype we avoided modifying the Android kernel in any way.
 Because the current prototype uses the UART port for communication
 with the Smartsensor, we were able to constrain our implementation to
 the user space. An integrated implementation would likely make use of
@@ -129,7 +129,7 @@ and an UART driver for communicating with the phone. The controller
 orchestrates the execution of the filters, and uses the UART driver to
 wake up the phone when a wake-up condition is satisfied.  The UART driver
 opens a serial port and then uses a TTY to copy the sensor readings
-and start the shell script that notifies the Sensor Manager.
+and starts the shell script that notifies the Sensor Manager.
 
 
 \subsubsection{Sensor Data Filters}

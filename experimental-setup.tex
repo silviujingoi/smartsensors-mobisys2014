@@ -30,7 +30,7 @@ standing idle, respectively. The reminder of the time was allocated as
 follows: 73\% for walking, 24\% for transitions between sitting and
 standing, and 3\% for headbutts.  This setup allows us to experiment
 with detecting actions that are common, somewhat frequent, and rare.
-In total, the robot executed 18 different runs: 9 for the group 1, 6
+In total, the robot executed 18 different runs: 9 for group 1, 6
 for group 2 and 3 for group 3.  We generated more runs for groups 1
 and 2 because of the lower activity levels compared to group 3. To
 eliminate bias, the list of actions was generated randomly for each
@@ -92,7 +92,7 @@ algorithm, and goes back to sleep.
 support for recognizing a limited number of predefined activities
 (e.g., Moto X).  For this purpose, we hard-coded the Smartsensor board
 as a {\em step detector} (EMA filter with $alpha = 50\%$ and x-axis
-$\ge 2 m/s^2$).  The applications register an even handler for the {\em
+$\ge 2 m/s^2$).  The applications register an event handler for the {\em
   step activity} and put the phone to sleep.  On wake-up, the
 applications acquire a batch of sensor readings, run their detection
 algorithm, and go back to sleep.
@@ -100,7 +100,7 @@ algorithm, and go back to sleep.
 \textbf{Smartsensors} We let applications define their own custom wake-up 
 condition by selecting a filter among the predefined set described
 in Section~\ref{sec:prototype} and setting the filter's configuration
-parameters and thresholds .  The applications register an even handler
+parameters and thresholds .  The applications register an event handler
 for the custom event of interest and put the phone to sleep.  On
 wake-up, the applications acquire a batch of sensor readings from the
 Smartsensor, run their detection algorithm, and go back to sleep.
@@ -123,7 +123,7 @@ derived from measurements of our Smartsensor prototype to estimate
 the average power consumption.  For experiments with {\em Always Awake}
 and {\em Duty Cycling}, the power model accounts only for the energy
 consumption of the Nexus 4.  For {\em Batching} and {\em Predefined Activity},
-the model also includes the cost of the simple TI MSP430
+the model also includes the cost of the low-power TI MSP430
 micro-controller.  Finally, experiments that use {\em Smartsensors} and {\em
   Oracle} include the cost of either the TI MSP430 or the TI Stellaris
 LM4F120H5QR, depending on the application being evaluated.
