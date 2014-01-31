@@ -7,8 +7,10 @@
 In this section we first present the result of experiments conducted
 on synthetic traces collected with our robotic testbed.  We then
 present results from experiments on a small number of traces collected
-from human subjects.  Finally, we discuss how an onboard Smartsensor
-implementation would affect our findings.
+from human subjects. 
+
+% Finally, we discuss how an onboard Smartsensor
+%implementation would affect our findings.
 
 \subsection{Synthetic Traces}
 
@@ -20,7 +22,7 @@ We answer the following questions:
 \item What are the benefits of Smartsensor over Duty Cycling and
   Batching?
 
-\item Can Predefined Activity support a broad set of applications?
+\item How flexible is Predefined Activity?
 
 \item How much additional benefit can be obtained from fully
   programmable wake-up conditions?
@@ -64,7 +66,7 @@ events (e.g., gesture recognition, fall detection).
 
 Smartsensor matches the recall of Always Awake while achieving large
 reductions in average power in all scenarios other than step detection
-in group 3, where walking represents 63\% of the trace and the device
+in Group 3, where walking represents 63\% of the trace and the device
 experiences little sleep.  Smartsensor performed best when the event
 of interest occurs infrequently, reductions power consumption by up to
 94\%.  
@@ -89,12 +91,12 @@ custom code offloading to the low-power processor can achieve minimal
 additional power savings.
 
 
-\begin{table*}[t]
+\begin{table}[t]
 \centering
 {\small
     \begin{tabular}{|l|l|c|c|c|c|c|}
 	\hline
-    \multirow{2}{*}{Sensor Data Filter}    	& \multicolumn{3}{c|}{Power Consumption (mW)} \\ \cline{2-4}
+    \multirow{2}{*}{Filter}    	& \multicolumn{3}{c|}{Power Consumption (mW)} \\ \cline{2-4}
 							& Steps	& Headbutts	& Transitions 	\\ \hline
     Null     				& 191		& 186		& 67.8 			\\ \hline
 	EMA   				& {\bf 188}		& 228		& {\bf 43.3} 			\\ \hline
@@ -102,39 +104,39 @@ additional power savings.
 	
     \end{tabular}
 }
-	\caption{Average power for Group 2 runs with different filters.}
+	\caption{Different wake-up conditions.}
 	\label{table:WUCfilters}
-\end{table*}
+\end{table}
 
 \subsubsection{Filter Selection and Configuration}
 
-Table~\ref{table:WUCfilters} shows the average power using three
-different filters for each application.  For each condition, the
-filter uses the parameters and thresholds that minimize average power
-while matching the recall of Always Awake.  The condition that
-achieves the lowest average power is highlighted.  The results show
-that different filters are optimal for different applications.  Even
-in cases where the same filter type is optimal, the configuration
-parameters for the filter and the wake-up thresholds different
-significantly.  Wake-up conditions based on EMA performed better than
-those based on FFT for Steps and Transitions.  While the use of FFT
-manages to reduce the occurance of unnecessary wake-ups (cases where
+Table~\ref{table:WUCfilters} shows the average power for wake-up
+conditions using different filters for runs in Group 2.  For each
+wake-up condition, the filter uses the parameters and thresholds that
+minimize average power while matching the recall of Always Awake.  The
+condition that achieves the lowest average power is highlighted.  The
+results show that different filters are optimal for different
+applications.  Wake-up conditions based on EMA performed better than
+those based on FFT for Steps and Transitions.  While the FFT filter
+reduces the occurance of unnecessary wake-ups (cases where
 the main processor is waken up but does not find an event of
 interest), this benefit it overshadowed by the additional power
-required to run the FFT filter.
+required to run it.
 
-Figure\ref{fig:wucHeadbuttFFTRecallPowerGroup3} uses the Headbutts
-application to ilustrate the importance of threshold selection.  A
+Even in cases where the same filter type is optimal, the configuration
+parameters for the filter and the wake-up thresholds differ
+significantly (see Table~\ref{table:WUCparameters}).
+Figure~\ref{fig:wucHeadbuttFFTRecallPowerGroup3} uses the Headbutts
+application to illustrate the importance of threshold selection.  A
 threshold that is too strict causes a significant drop-off in the
-achieved recall.  However, choosing a threshold that is too lenient
-results in additional power consumption without any extra benefit to
-recall because of unnecessary wake-ups.  This is futher evidence that
-applications should be allowed to configure their wake-up condition in
-order to optimize performance.
+achieved recall.  However, a threshold that is too lenient results in
+additional power consumption without any extra benefit to recall
+because of unnecessary wake-ups.
+
 
 \begin{figure}[h]
 	\includegraphics[width=3.1in]{wuc_hb_fft_group3.png}
-	\caption{Threshold sensitivity for Headbutts application.}
+	\caption{Threshold sensitivity for Headbutts.}
     \label{fig:wucHeadbuttFFTRecallPowerGroup3}
 \end{figure}
 
@@ -186,7 +188,7 @@ at least 91\% of the available power saving in each of the traces.
 	\label{table:macrobenchmarks}
 \end{table*}
 
-\subsection{Discussion}
+%\subsection{Discussion}
 
-{\em TODO An integrated implemetation is likely to be more power
-  efficient. How does this affect these results?}
+%{\em TODO An integrated implemetation is likely to be more power
+%  efficient. How does this affect these results?}

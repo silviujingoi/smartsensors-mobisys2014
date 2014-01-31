@@ -4,9 +4,9 @@ The idea of waking up a device when an event of interest occurs has been
 around since the inception of mobile phones. The phone's radio 
 transceiver wakes up the device when an incoming call or a text message 
 is received~\cite{gobi}. Wake on Wireless~\cite{shih2002wake} extended this idea by 
-augmenting a PDA with a low-power radio that would send a wakeup message 
+augmenting a PDA with a low-power radio that would send a wake-up message 
 when an incoming call is received. Similarly, Wake on WLAN
-~\cite{mishra2006wake} allows remote wakeup of wireless networking
+~\cite{mishra2006wake} allows remote wake-up of wireless networking
 equipment.
 
 Turducken~\cite{turducken} generalizes the ``wake on event of interest'' 
@@ -24,15 +24,15 @@ the developer to create any code that will run on the low-power processor(
 s). We limit the available interface in order to increase portability, 
 while still achieving the majority of the potential power savings.
 
-Recently, smartphone manufacturers have started incorporated low-power 
-processors into their architectures, but have only implemented limited 
-APIs that provide fixed functionality. The Google Nexus 5 allows batching 
-of sensor readings~\cite{ android4.4,nexus5}, and the Motorola Moto X 
-provides recognition for a small number of predefined activities that can 
-be used as wake up conditions~\cite{motox}. While these wake-up 
-conditions work well for some applications, they are inefficient for many 
-other types of applications that are not interested in the set of 
-predefined activities.
+Smartphone manufacturers have started to incorporat low-power
+processors into their architectures, but have only implemented limited
+APIs that provide fixed functionality. The Google Nexus 5 allows
+batching of sensor readings~\cite{android4.4,nexus5}, and the
+Motorola Moto X provides recognition for a small number of predefined
+activities that can be used as wake-up conditions~\cite{motox}. While
+these wake-up conditions work well for some applications, they are
+inefficient for many other types of applications that are not
+interested in the set of predefined activities.
 
 Most of the previously noted works focused on system architecture 
 modification in order to lower the cost of sensing. Alternative 
