@@ -9,24 +9,28 @@
 \label{sec:prototype}
 
 We implemented a prototype of our system using a Google Nexus 4 phone
-running Android 4.2.2. The low-power smart sensor is implemented using
+running Android 4.2.2.  The low-power Smartsensor is implemented using
 a Texas Instruments micro-controller board attached to an
-accelerometer sensor. The Nexus 4 and TI board communicate over the
-UART port made available by the Nexus 4 debugging interface via the
-physical port used by the audio interface. Figure
+accelerometer sensor.  We chose to focus our efforts on the
+accelerometer sensor because of its relative simplicity and the
+availability of a wide range of accelerometer-based applications on
+various mobile application markets.  Figure
 \ref{fig:prototypeArchitecture} shows a high-level diagram of the
 prototype's architecture.
 
-We chose to focus our efforts on the accelerometer sensor because of
-its relative simplicity and the availability of a wide range of
-accelerometer-based applications on various mobile application
-markets. Nevertheless, the approach can be extended to other low
-bit-rate sensors such as the microphone, GPS or WiFi. However,
-extending the prototype to work with higher bit-rate sensors like the
-camera would require a higher bandwidth data bus such as $I^2C$.
+The Nexus 4 and TI board communicate over the UART port made available
+by the Nexus 4 debugging interface via the physical port used by the
+audio interface.  The serial connection provides sufficient bandwidth
+to support low bit-rate sensors, such as the accelerometer, a
+microphone or GPS.  However, extending the prototype to work with
+higher bit-rate sensors like the camera would require a higher
+bandwidth data bus, such as $I^2C$.
 
+The rest of this section describes our extensions to the phone, the
+implementation of the Smartsensor board, and the applications and test
+frameworks we use in our experiments.
 
-\subsection{Google Nexus 4}
+\subsection{Nexus 4}
 \label{subsec:nexus}
 
 \begin{figure*}[t]
@@ -66,22 +70,22 @@ filter and wake-up parameters. The available types of wake-up
 conditions, described in detail in Subsection
 \ref{sec:sensorDataFilters}, are a set of predefined implementations
 of a DataFilterAlgorithm interface.
-Figures~\ref{fig:androidSensorCodeModified} and
-~\ref{fig:androidSensorCodeNormal} show an example of an application
-that registers a listener to receive accelerometer readings using the
-default Android Sensor Manager, and the modified code that includes a
-wake-up condition that uses an exponential moving average low pass
-filter and an x-axis threshold, respectively.
+Figures~\ref{fig:androidSensorCodeNormal}
+and~\ref{fig:androidSensorCodeModified} show an example of an
+application that registers a listener to receive accelerometer
+readings using the default Android Sensor Manager, and the modified
+code that includes a wake-up condition that uses an exponential moving
+average low pass filter and an x-axis threshold, respectively.
 
 We also created a UART stub to facilitate communication between the
-mobile phone and the smart sensor board. The UART stub is called when
-the smart sensor board detects an event based on its wake-up condition.
+mobile phone and the Smartsensor board. The UART stub is called when
+the Smartsensor board detects an event based on its wake-up condition.
 In turn, the UART stub is a shell script that notifies the
 SensorManager using an Android Intent\cite{androidintents}.
 
 For our prototype we avoid modifying the Android kernel in any way.
 Because the current prototype uses the UART port for communication
-with the smart sensor, we were able to constrain our implementation to
+with the Smartsensor, we were able to constrain our implementation to
 the user space. An integrated implementation would likely make use of
 a higher bandwidth bus such as the $I^2C$ bus and require a custom
 driver.
@@ -115,16 +119,16 @@ average power consumption goes up to 384 mW, while during an
 awake-to-asleep transition the average power consumption is 341 mW.
 
 
-\subsection{Smart Sensor Board}
+\subsection{Smartsensor Board}
 \label{subsec:sensorBoard}
 
-The low-power smart sensor board consists of a driver that talks to
+The low-power Smartsensor board consists of a driver that talks to
 the accelerometer sensor, a set of filtering algorithms, a controller,
 and an UART driver for communicating with the phone. The controller
 orchestrates the execution of the filters, and uses the UART driver to
-wake up the phone when a wake-up condition is satisfied.  UART driver
+wake up the phone when a wake-up condition is satisfied.  The UART driver
 opens a serial port and then uses a TTY to copy the sensor readings
-and start the shell script that notifies the sensor manager.
+and start the shell script that notifies the Sensor Manager.
 
 
 \subsubsection{Sensor Data Filters}
@@ -144,11 +148,11 @@ We implemented three filters of increasing complexity:
   implements the following equation: $out_{t} = (1-\alpha) \times
   out_{t-1} + \alpha \times in$
 
-\paragraph{FFT} Applies a fast Fourier
+  \paragraph{FFT} Applies a Fast Fourier
   transformation~\cite{libbyFootstepDetection} that is more accurate
   at removing noise from the sensor data. However, it is
   computationally expensive. Two parameters can be set for the
-  FFT-LPF: a window-size and a relative energy threshold value. The
+  FFT: a window-size and a relative energy threshold value. The
   window size indicates the number of readings that are to be used in
   each discrete Fourier transform. The relative energy threshold value
   controls the amount of energy in the output data. A lower relative
@@ -175,15 +179,15 @@ Instruments, the MSP430 and the Stellaris LM4F120H5QR.  The MSP430 has
 the advantage of requiring very little power, consuming only 3.6 mW
 while awake. However, it has limited memory and cannot perform complex
 analysis of sensor data in real-time. In our tests, it was unable to
-run the FFT filter in real-time.  Stellaris LM4F120H5QR is powered by
-Cortex-M4 processor. It can batch a higher number of accelerometer
-readings and run all our filters in real-time.  However, this
+run the FFT filter in real-time.  The Stellaris LM4F120H5QR is powered
+by a Cortex-M4 processor. It can batch a higher number of accelerometer
+readings and can run all our filters in real-time.  However, this
 micro-controller has an energy footprint an order of magnitude greater
 than the MSP430, consuming an average of 49.4 mW while awake.
 
 \begin{figure}[t]
 	\includegraphics[width=3in]{aibo_ers_210.jpg}
-	\caption{AIBO ERS 210 with smart sensor prototype mounted on its back.}
+	\caption{AIBO ERS 210 with Smartsensor prototype mounted on its back.}
 	\label{fig:aibo}
 \end{figure}
 
@@ -205,12 +209,12 @@ its human counterpart, though at a lower intensity. The headbutts are
 meant to represent very infrequent human actions such as falling. We
 found that robot stance transitions between the normal and sitting
 postures are very similar in their acceleration signature to humans
-sitting down and standing up.  In section~\ref{sec:results} we show
+sitting down and standing up.  In Section~\ref{sec:results} we show
 that the energy saving measured in our experiments with the robot
 approximate closely the results of experiments conducted on limited
 traces collected from human subjects.
 
-\paragraph{Steps} counts how many steps the robot takes when it
+\paragraph{Steps} Counts how many steps the robot takes when it
   walks. It's algorithm is based on the human step detection algorithm
   proposed by Ryan Libby in~\cite{libbyFootstepDetection}. The
   application takes in raw accelerometer readings and applies a
@@ -219,7 +223,7 @@ traces collected from human subjects.
   between $2.5\:m/s^2$ and $4.5\:m/s^2$ are detected as steps, given
   that no other steps were detected within the last 100 ms.
 
-\paragraph{Transitions} detects transitions between seating and
+\paragraph{Transitions} Detects transitions between seating and
   standing.  The application monitors changes in acceleration due to
   gravity on the y and z axes to determine the orientation of the
   device. If the z-axis (up-down relative to the dog) acceleration is
@@ -233,6 +237,6 @@ traces collected from human subjects.
   in a sitting posture. The application detects transitions by looking
   for posture changes.
 
-\paragraph{Headbutts} detect a sudden forward head movement.  The
+\paragraph{Headbutts} Detects a sudden forward head movement.  The
   application monitors the y-axis acceleration and searches for local
   minima between $-3.75\:m/s^2$ and $-6.75\:m/s^2$.
