@@ -82,20 +82,20 @@ another 4 second, and goes to sleep otherwise.  This software only
 implementation runs on any mobile device and does not require special
 hardware support.
 
-\textbf{Batching} This configuration emulates hardware support for
-collecting and batching accelerometer readings while the main
-processor sleeps (e.g., Nexus 5).  The application wakes up
+\textbf{Batching} This configuration emulates hardware support
+available on the Nexus 5 for collecting and batching accelerometer
+readings while the main processor sleeps.  The application wakes up
 periodically, reads the batch of sensor readings, runs the detection
 algorithm, and goes back to sleep.
 
 \textbf{Predefined Activity} This configuration emulates hardware
-support for recognizing a limited number of predefined activities
-(e.g., Moto X).  For this purpose, we hard-coded the Smartsensor board
-as a {\em step detector} (EMA filter with $alpha = 50\%$ and x-axis
-$\ge 2 m/s^2$).  The applications register an event handler for the {\em
-  step activity} and put the phone to sleep.  On wake-up, the
-applications acquire a batch of sensor readings, run their detection
-algorithm, and go back to sleep.
+support available on the Moto X for recognizing a limited number of
+predefined activities.  For this purpose, we hard-coded the
+Smartsensor board as a {\em step detector} (EMA filter with $alpha =
+50\%$ and x-axis $\ge 2 m/s^2$).  The applications register an event
+handler for the {\em step activity} and put the phone to sleep.  On
+wake-up, the applications acquire a batch of sensor readings, run
+their detection algorithm, and go back to sleep.
 
 \textbf{Smartsensors} We let applications define their own custom wake-up 
 condition by selecting a filter among the predefined set described
