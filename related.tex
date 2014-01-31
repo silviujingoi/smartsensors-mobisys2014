@@ -28,15 +28,18 @@ Recently, smartphone manufacturers have started incorporated low-power
 processors into their architectures, but have only implemented limited 
 APIs that provide fixed functionality. The Google Nexus 5 allows batching 
 of sensor readings~\cite{ android4.4,nexus5}, and the Motorola Moto X 
-provides recognition of a small number of predefined activities that can 
-be used as wake up conditions~\cite{motox}.
+provides recognition for a small number of predefined activities that can 
+be used as wake up conditions~\cite{motox}. While these wake-up 
+conditions work well for some applications, they are inefficient for many 
+other types of applications that are not interested in the set of 
+predefined activities.
 
 Most of the previously noted works focused on system architecture 
 modification in order to lower the cost of sensing. Alternative 
 approaches have also been explored. Ace~\cite{ace} is a middleware that 
 supports continuous context-aware applications while mitigating sensing 
-cost for acquisition of context attributes (such as AtHome and IsDriving)
-. It achieves power savings when multiple applications request strongly 
+cost for acquisition of context attributes (such as AtHome and IsDriving). 
+It achieves power savings when multiple applications request strongly 
 correlated context attributes. Additionally, it can reduce power 
 consumption when a ``cheaper'' sensor exists, which can determine the 
 value of a different context attribute that has a strong correlation with 
@@ -44,11 +47,14 @@ the requested context attribute (e.g. use the accelerometer to check if
 the user is jogging instead of using the GPS to determine if the user is 
 at work). A middleware such as Ace is a great example of a library that 
 can run on top of a Smart Sensors architecture (once we implement support 
-for multiple sensors) and achieve additional power savings.
+for multiple sensors) and achieve additional power savings. Sensor fusion 
+has also been an active focus of related research. Data from multiple 
+sensors can be used to increase context-awareness in mobile devices 
+\cite{gellersen2002multi,biegel2004framework}.
 
 While our focus was on power-efficient acquisition of sensor data, next 
-generation mobile perception applications face a related problems that 
-are the active focus of other research. MAUI~\cite{maui} enables fine-
+generation mobile perception applications face related problems regarding 
+partitioning of application code. MAUI~\cite{maui} enables fine-
 grained energy-aware offload of mobile application code to remote 
 servers. Similarly, Odessa~\cite{ra2011odessa} uses code-offloading to 
 address the issue of processing excessive amounts of sensor data on 
