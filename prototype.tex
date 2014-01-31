@@ -66,8 +66,8 @@ existing sensors API.
 
 We extended the Sensor Manager to allow users to define custom wake-up
 conditions by specifying a pre-defined data filter and configuring the
-filter and wake-up parameters. The available types of wake-up
-conditions, described in detail in Subsection
+filter and wake-up parameters. The available types of sensor data filters, 
+described in detail in Subsection
 \ref{sec:sensorDataFilters}, are a set of predefined implementations
 of a DataFilterAlgorithm interface.
 Figures~\ref{fig:androidSensorCodeNormal}
@@ -75,7 +75,7 @@ and~\ref{fig:androidSensorCodeModified} show an example of an
 application that registers a listener to receive accelerometer
 readings using the default Android Sensor Manager, and the modified
 code that includes a wake-up condition that uses an exponential moving
-average low pass filter and an x-axis threshold, respectively.
+average low-pass filter and an x-axis threshold, respectively.
 
 We also created a UART stub to facilitate communication between the
 mobile phone and the Smartsensor board. The UART stub is called when
@@ -149,8 +149,8 @@ We implemented three filters of increasing complexity:
   implements the following equation: $out_{t} = (1-\alpha) \times
   out_{t-1} + \alpha \times in$
 
-  \paragraph{FFT} Applies a Fast Fourier
-  transformation~\cite{libbyFootstepDetection} that is more accurate
+  \paragraph{FFT} Applies a low-pass filter based on Fast Fourier
+  transformations~\cite{libbyFootstepDetection} that is more accurate
   at removing noise from the sensor data. However, it is
   computationally expensive. Two parameters can be set for the
   FFT: a window-size and a relative energy threshold value. The
@@ -175,12 +175,12 @@ the following thresholds:
 
 \subsubsection{Hardware Options}
 
-We evaluated two low-power micro-controllers manufactures by Texas
+We evaluated two low-power micro-controllers manufactured by Texas
 Instruments, the MSP430 and the Stellaris LM4F120H5QR.  The MSP430 has
 the advantage of requiring very little power, consuming only 3.6 mW
 while awake. However, it has limited memory and cannot perform complex
 analysis of sensor data in real-time. In our tests, it was unable to
-run the FFT filter in real-time.  The Stellaris LM4F120H5QR is powered
+run the FFT-based low-pass filter in real-time.  The Stellaris LM4F120H5QR is powered
 by a Cortex-M4 processor. It can batch a higher number of accelerometer
 readings and can run all our filters in real-time.  However, this
 micro-controller has an energy footprint an order of magnitude greater
@@ -197,20 +197,20 @@ than the MSP430, consuming an average of 49.4 mW while awake.
 
 To enable us to conduct controlled and repeatable experiments, we
 mounted the Smartsensor prototype on the back of an AIBO ERA 210 robot
-dog (see Figure~\ref{fig:aibo}).  Becuase the robot's actions can be
+dog (see Figure~\ref{fig:aibo}). Because the robot's actions can be
 scripted, this setup provides an efficient and reliable way to
-determine ground truth.  In contrast, labeling data collected from
+determine ground truth. In contrast, labelling data collected from
 human subjects with ground truth is error prone and labour intensive.
 
 We developed three applications that detect activities that the robot
-can perform: walking, seating and standing, headbutts.  We chose these
+can perform: walking, sitting and standing, headbutts. We chose these
 actions because they have similar acceleration signatures to human
 activities. A walking robot has a similar acceleration signature as
 its human counterpart, though at a lower intensity. The headbutts are
 meant to represent very infrequent human actions such as falling. We
 found that robot stance transitions between the normal and sitting
 postures are very similar in their acceleration signature to humans
-sitting down and standing up.  In Section~\ref{sec:results} we show
+sitting down and standing up. In Section~\ref{sec:results} we show
 that the energy saving measured in our experiments with the robot
 approximate closely the results of experiments conducted on limited
 traces collected from human subjects.
@@ -224,7 +224,7 @@ traces collected from human subjects.
   between $2.5\:m/s^2$ and $4.5\:m/s^2$ are detected as steps, given
   that no other steps were detected within the last 100 ms.
 
-\paragraph{Transitions} Detects transitions between seating and
+\paragraph{Transitions} Detects transitions between sitting and
   standing.  The application monitors changes in acceleration due to
   gravity on the y and z axes to determine the orientation of the
   device. If the z-axis (up-down relative to the dog) acceleration is

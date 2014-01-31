@@ -3,7 +3,7 @@
 
 We evaluated our implementation using trace-based simulation on traces
 collected from controlled experiments conducted with our robotic
-testebed as well as limited traces collected from human subjects.
+testbed as well as limited traces collected from human subjects.
 While our robotic testbed allows us to run live experiments, we chose
 instead to use trace-based simulation for several reasons.  First, it
 took the robot close to an hour to complete a single experiment.  A
@@ -28,7 +28,7 @@ headbutt.  We created runs with three different levels of activity.
 Runs in groups 1, 2 and 3 spent 90\% , 50\% and 10\% of the time
 standing idle, respectively. The reminder of the time was allocated as
 follows: 73\% for walking, 24\% for transitions between sitting and
-standing, and 3\% for headbutts.  This set-up allows us to experiment
+standing, and 3\% for headbutts.  This setup allows us to experiment
 with detecting actions that are common, somewhat frequent, and rare.
 In total, the robot executed 18 different runs: 9 for the group 1, 6
 for group 2 and 3 for group 3.  We generated more runs for groups 1
@@ -36,11 +36,11 @@ and 2 because of the lower activity levels compared to group 3. To
 eliminate bias, the list of actions was generated randomly for each
 run, based on the expected probabilities of each action occurring.
 
-In adition, to validate the applicability of our results to human
+In addition, to validate the applicability of our results to human
 scenarios, we collected six hours worth of accelerometer traces from
-three different individuals while they performe routine daily
+three different individuals while they perform routine daily
 activities: morning commute using public transit, walking in a retail
-store, and walking in an office.  Between 22\% and 37\% of each trace
+store, and walking in an office.  Between 20\% and 37\% of each trace
 is spent walking.
 
 
@@ -67,7 +67,7 @@ is spent walking.
 We replayed each trace under the following sensing approaches:
 
 \textbf{Always Awake} The applications keep the phone awake all the
-time constantly collecting accelerometer readings.  This setup
+time, constantly collecting accelerometer readings.  This setup
 achieves the highest detection
 recall\footnote{$Recall=TruePositives/(TruePositives+FalseNegatives)$}
 and
@@ -90,14 +90,15 @@ algorithm, and goes back to sleep.
 
 \textbf{Predefined Activity} This configuration emulates hardware
 support for recognizing a limited number of predefined activities
-(e.g., Moto X).  For this purpose, we hardwired the Smartsensor board
-as a {\em step detector} (EMA filter with $alpha = 50\%$ and $x-axis
-\ge 2 m/s^2$).  The applications register an even handler for the {\em
+(e.g., Moto X).  For this purpose, we hard-coded the Smartsensor board
+as a {\em step detector} (EMA filter with $alpha = 50\%$ and x-axis
+$\ge 2 m/s^2$).  The applications register an even handler for the {\em
   step activity} and put the phone to sleep.  On wake-up, the
 applications acquire a batch of sensor readings, run their detection
 algorithm, and go back to sleep.
 
-\textbf{Smartsensors} We let applications define their own custom wake-up condition by selecting a filter among the predefined set described
+\textbf{Smartsensors} We let applications define their own custom wake-up 
+condition by selecting a filter among the predefined set described
 in Section~\ref{sec:prototype} and setting the filter's configuration
 parameters and thresholds .  The applications register an even handler
 for the custom event of interest and put the phone to sleep.  On
@@ -118,10 +119,10 @@ code offloading.
 For each sensing approach and trace, we measured the amount of sleep
 and awake time, the total number of wake-up events, and the recall and
 precision of the application.  Finally, we used an energy model
-derived from measurements of our Smartsensor prototype to estimated
-the average power consumption.  For experimens with {\em Always Awake}
+derived from measurements of our Smartsensor prototype to estimate
+the average power consumption.  For experiments with {\em Always Awake}
 and {\em Duty Cycling}, the power model accounts only for the energy
-consumption of the Nexus 4.  For {\em Batching} and {\em Activity},
+consumption of the Nexus 4.  For {\em Batching} and {\em Predefined Activity},
 the model also includes the cost of the simple TI MSP430
 micro-controller.  Finally, experiments that use {\em Smartsensors} and {\em
   Oracle} include the cost of either the TI MSP430 or the TI Stellaris

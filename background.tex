@@ -16,16 +16,18 @@ reading, the operating system passes the reading to the application via a
 callback function. This operation continues until the listener is unregistered
 or until the wake lock is released. The benefit of this approach is that it
 achieves the highest possible accuracy because all the sensor data is delivered to the
-application. However, the device cannot be powered down and hence the power
+application. However, the device cannot a sleeping state and hence the power
 consumption of this approach is high.
 
 \subsection{Duty Cycling}
 
 To avoid keeping the device awake for extended periods of time, \emph{duty 
 cycling} allows a device to sleep for fixed, usually regular, periods of
-time. An application on Android can implement duty cycling by scheduling a wake-up alarm using the system's alarm service and by ensuring that it has not
+time. An application on Android can implement duty cycling by scheduling a wake-up 
+alarm using the system's alarm service and by ensuring that it has not
 acquired a wake lock. When no application has a wake lock, the operating system
-can power down the processor. When the wake-up alarm fires, the processor wakes up and notifies the application. Next, the application collects sensor readings
+can power down the processor. When the wake-up alarm fires, the processor wakes 
+up and notifies the application. Next, the application collects sensor readings
 for a short period of time, and then reschedules another alarm.
 
 Duty cycling has several drawbacks. While the device is sleeping, events of interest will not be 
