@@ -60,9 +60,11 @@ application~\cite{liu2009uwave,schlomer2008gesture} would not be
 satisfied if the application detects the performed gesture after a
 delay of more than a couple of seconds.  We anticipate that in
 practice realistic batching intervals are in the order of a few
-seconds.  We therefore conclude, that batching will result in
-significant energy waste for applications interested in low frequency
-events (e.g., gesture recognition, fall detection).
+seconds.  Additionally, the device often wakes up to find out that no 
+events occurred in the current batch. We therefore conclude that 
+batching will result in significant energy waste for applications 
+interested in low frequency events (e.g., gesture recognition, fall 
+detection).
 
 Smartsensor matches the recall of Always Awake while achieving large
 reductions in average power in all scenarios other than step detection
@@ -87,7 +89,7 @@ applications.
 By comparing the performance of the Smartsensor approach to Oracle we
 observe that for most usage scenarios, the Smartsensor approach
 achieves over 95\% of the available power
-savings\footnote{$AvailableSavings=1-Oracle/AlwayAwake$}.
+savings\footnote{$Available\:Savings=Always\:Awake - Oracle$}.
 We conclude that a system that allows
 custom code offloading to the low-power processor can achieve minimal
 additional power savings.
@@ -163,9 +165,9 @@ at least 91\% of the available power saving in each of the traces.
 {\small
     \begin{tabular}{|l|c|c|c|c|c|c|}
     \hline
-	\multirow{2}{*}{Approach}		& \multirow{2}{*}{\parbox{2.2cm}{Sleep Interval (seconds)}}
+	\multirow{3}{*}{Approach}		& \multirow{3}{*}{\parbox{1.9cm}{Sleep Interval (seconds)}}
 												& \multicolumn{3}{c|}{\parbox{5.2cm}{Average Power (mW)}}
-																								& \multirow{2}{*}{\parbox{1.5cm}{Average Recall}} \\ \cline{3-5}
+																								& \multirow{3}{*}{\parbox{1.5cm}{Average Recall}} \\ \cline{3-5}
 									&			& Trace 1		& Trace 2		& Trace 3 		& 							\\ 
 									&			& 37\% walking	& 22\% walking		& 20\% walking		& \\ \hline
 	Always Awake					& 			& \multicolumn{3}{c|}{323} 						& 100\% \\ \hline
