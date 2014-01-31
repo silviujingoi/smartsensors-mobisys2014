@@ -43,7 +43,7 @@ averages across runs of the same group.  We use the results for the
 Always Awake approach (which achieves close to perfect recall) as a
 base line for comparison.  All sensing approaches achieved similar
 average precision (Headbutts: 89\%, Transitions: 91\%, Walking:
-0.93\%), and we therefore do not include these numbers in the table.
+93\%), and we therefore do not include these numbers in the table.
 
 As expected, Duty Cycling performs poorly.  Short sleep intervals
 actually result in an increase in power consumption due to frequent
@@ -85,7 +85,7 @@ but lacks the generality to support a broad set of applications.
 By comparing the performance of the Smartsensor approach to Oracle we
 observe that for most usage scenarios, the Smartsensor approach
 achieves over 95\% of the available power
-saving\footnote{$AvailableSavings=1-Oracle/AlwayAwake$}.
+savings\footnote{$AvailableSavings=1-Oracle/AlwayAwake$}.
 We conclude that a system that allows
 custom code offloading to the low-power processor can achieve minimal
 additional power savings.
@@ -119,8 +119,8 @@ results show that different filters are optimal for different
 applications.  Wake-up conditions based on EMA performed better than
 those based on FFT for Steps and Transitions.  While the FFT filter
 reduces the occurrence of unnecessary wake-ups (cases where
-the main processor is waken up but does not find an event of
-interest), this benefit it overshadowed by the additional power
+the main processor is woken up but does not find an event of
+interest), this benefit is overshadowed by the additional power
 required to run it.
 
 Even in cases where the same filter type is optimal, the configuration
