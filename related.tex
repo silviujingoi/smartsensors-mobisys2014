@@ -17,9 +17,9 @@ devices. Reflex ~\cite{reflex} complements the idea proposed by Turducken
 by providing a shared memory abstraction to be used by the different 
 processors.
 
-Smart Sensors differs from these approaches by hiding the heterogeneous 
+Smartsensors differs from these approaches by hiding the heterogeneous 
 nature of the system from the application developer. Creating an 
-application that makes use of one or more Smart Sensors does not require 
+application that makes use of one or more Smartsensors does not require 
 the developer to create any code that will run on the low-power processor(
 s). We limit the available interface in order to increase portability, 
 while still achieving the majority of the potential power savings.
@@ -46,7 +46,7 @@ value of a different context attribute that has a strong correlation with
 the requested context attribute (e.g. use the accelerometer to check if 
 the user is jogging instead of using the GPS to determine if the user is 
 at work). A middleware such as Ace is a great example of a library that 
-can run on top of a Smart Sensors architecture (once we implement support 
+can run on top of a Smartsensor architecture (once we implement support 
 for multiple sensors) and achieve additional power savings. Sensor fusion 
 has also been an active focus of related research. Data from multiple 
 sensors can be used to increase context-awareness in mobile devices 
@@ -59,62 +59,3 @@ grained energy-aware offload of mobile application code to remote
 servers. Similarly, Odessa~\cite{ra2011odessa} uses code-offloading to 
 address the issue of processing excessive amounts of sensor data on 
 resource constrained mobile devices.
-
-\iffalse
-Over the past few years there has been a significant 
-amount of work on reducing energy consumption in mobile 
-devices. Reflex~\cite{reflex} achieves energy efficiency 
-by leveraging architectural asymmetry between two low-
-power processors and a powerful central processor. 
-However, an application developer has to be aware of the 
-heterogeneous nature of these platforms and even simple 
-applications have to be refactored into distributed 
-programs. The programmer has to divide the application 
-into separate modules what run on the central and 
-peripheral processors, respectively. Turducken~\cite{
-turducken} is a mobile device architecture that 
-integrates several mobile computing platforms that 
-operate at different power levels into a multi-tiered 
-device. The authors present two options available to 
-developers in order to create distributed applications. 
-One option is to ``use a proxy-based architecture that 
-can take advantage of existing distributed application 
-components''. Alternatively, the developer has to build 
-an application that is customized for the system, by 
-creating components for each tier. Smart Sensors differs 
-from these approaches by hiding the heterogeneous nature 
-of our system from the application developer. Creating an 
-application that makes use of one or more Smart Sensors 
-does not require the developer to create any code that 
-will run on the low-power processor.
-
-Little Rock~\cite{littlerock} proposes a system 
-architecture similar to ours in order to run a basic 
-Pedometer application. The paper presents two approaches 
-to reducing energy consumption. In the first approach, 
-the entire Pedometer application is executed on the low-
-power processor, achieving significant power savings. 
-This is possible because their implementation of the 
-pedometer application only performs several algebraic 
-and comparison operations for each accelerometer 
-reading, hence it can run on the peripheral processor in 
-real-time. The Steps application we implemented for our 
-evaluation uses a more complex algorithm, including 
-Discrete Fourier Transforms and Inverse Discrete Fourier 
-Transforms. In the second approach, they propose a 
-hybrid application, where the low-power processor is 
-responsible for acquiring sensor readings, waking up the 
-main processor, transferring the data and letting the 
-phone perform all the processing. This approach is 
-similar to the Batching method described in our paper 
-and suffers from the same drawbacks. The power profile 
-of their hybrid implementation is similar to our results 
-for the Batching method. Similarly to Reflex and 
-Turducken, Little Rock's heterogeneous architecture 
-makes application development more complex. Smart 
-Sensors is complementary to these works by introducing a 
-programming model based on customizable data filters and 
-wake-up conditions that simplifies application 
-development while taking advantage of the power savings 
-realized by the use of a low-power processor.
-\fi
